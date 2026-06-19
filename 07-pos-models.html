@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>7 · Statistical / ML / Neural POS — NLP Midsem Hub</title>
+<link rel="stylesheet" href="styles.css">
+<script defer src="app.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<div class="layout">
+<main class="content">
+
+  <div class="page-head">
+    <div class="crumb"><a href="index.html">Home</a> › Topic 7</div>
+    <span class="topic-tag">⚙️ Topic 7</span> <span class="mark-badge">4 marks · Problem / application</span>
+    <h1>Statistical, ML &amp; Neural Models of POS Tagging</h1>
+    <p class="lede">How to actually decode the best tag sequence — Hidden Markov Models with the Viterbi algorithm, then discriminative MEMM/CRF, and finally neural Bi-LSTM-CRF, Transformers and LLM agents.</p>
+  </div>
+
+  <!-- THEORY -->
+  <section class="section sec-theory">
+    <div class="sec-head"><div class="sec-ico">📘</div><h2>Theory</h2></div>
+
+    <h3>The Hidden Markov Model (HMM)</h3>
+    <p>A generative sequence model. <b>States</b> = tags \(t_1\dots t_N\); <b>observations</b> = words \(w_1\dots w_N\). It has three pieces:</p>
+    <div class="deflist">
+      <div class="d"><b>Transition matrix \(A\)</b>: \(a_{ij}=P(t_i=j\mid t_{i-1}=i)\) — tag-to-tag.</div>
+      <div class="d"><b>Emission matrix \(B\)</b>: \(b_i(k)=P(w=v_k\mid t=i)\) — word given tag.</div>
+      <div class="d"><b>Initial vector \(\pi\)</b>: \(\pi_i=P(t_1=i)\).</div>
+    </div>
+    <p>Two assumptions make it tractable: (1) a tag depends only on the previous tag (bigram/Markov), (2) a word depends only on its own tag.</p>
+
+    <h3>Why Bayes? Turning the problem around</h3>
+    <p>We want \(\hat t_1^n=\arg\max_t P(t\mid w)\). Applying Bayes' rule and dropping the constant \(P(w)\):</p>
+    <div class="formula-block">\[ \hat t_1^{\,n}=\operatorname*{arg\,max}_{t}\underbrace{P(w\mid t)}_{\text{likelihood}}\,\underbrace{P(t)}_{\text{prior}}=\arg\max_t \prod_{i=1}^{n}\underbrace{P(w_i\mid t_i)}_{\text{emission}}\,\underbrace{P(t_i\mid t_{i-1})}_{\text{transition}} \]</div>
+    <p>So the joint score of a path is a product of emission × transition terms — the parameters you counted in Topic 6.</p>
+
+    <h3>The Viterbi algorithm (dynamic programming)</h3>
+    <p>Trying all \(|tags|^n\) sequences is exponential. Viterbi keeps, for each cell (state \(s\), time \(t\)), only the <b>best path</b> reaching it:</p>
+    <div class="formula-block">
+      <div class="label">Initialise (column 1)</div>\[ v_1(s)=\pi_s\,b_s(w_1) \]
+      <div class="label">Recurse (column j ≥ 2)</div>\[ v_j(s)=\max_{s'}\;v_{j-1}(s')\,a_{s' s}\,b_s(w_j) \]
+    </div>
+    <p>Store a <b>backpointer</b> to the \(s'\) that achieved each max; at the end, follow backpointers from the best final cell to read off the tag sequence.</p>
+
+    <h3>MEMM — going discriminative</h3>
+    <p>An HMM models the likelihood \(P(w\mid t)\). A <b>Maximum Entropy Markov Model (MEMM)</b> instead models the posterior \(P(t\mid w)\) <i>directly</i> with logistic regression, which lets you throw in <b>rich features</b> (word shape, suffixes, neighbouring words, previous tags). Decoding still uses Viterbi; the naive left-to-right <b>greedy</b> decoder is fast but can't use future evidence, so it underperforms.</p>
+
+    <h3>Neural &amp; modern approaches</h3>
+    <div class="deflist">
+      <div class="d"><b>Bi-LSTM-CRF</b> — a Bi-LSTM reads the sentence both directions (word + char embeddings) to extract features; a CRF layer enforces valid tag sequences. ~97–98% on Penn Treebank.</div>
+      <div class="d"><b>Transformers (BERT/RoBERTa)</b> — pretrained, then fine-tuned with a classification head. Self-attention captures deep context; ~98.5–99.5% accuracy, the current SOTA.</div>
+      <div class="d"><b>LLM prompting &amp; agents</b> — frame tagging as an instruction ("Tag using the Penn Treebank tagset…"), zero-/few-shot. In agents, a fast fine-tuned tagger is used as a <i>tool</i> to ground actions.</div>
+    </div>
+  </section>
+
+  <!-- INTUITION -->
+  <section class="section sec-intuition">
+    <div class="sec-head"><div class="sec-ico">💡</div><h2>Intuition</h2></div>
+    <p>Think of the HMM as a storyteller: it secretly walks through tags (transitions) and at each tag "emits" a word (emission). Tagging reverses the story — given the words, find the most likely hidden walk. Viterbi does this efficiently by never keeping a path that's already worse than another path into the same state.</p>
+    <div class="figure">
+      <svg viewBox="0 0 520 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simple HMM state diagram">
+        <g font-family="Segoe UI, sans-serif" font-size="12" text-anchor="middle">
+          <circle cx="120" cy="70" r="34" fill="#6366f1"/><text x="120" y="74" fill="#fff" font-weight="700">DET</text>
+          <circle cx="300" cy="70" r="34" fill="#ec4899"/><text x="300" y="74" fill="#fff" font-weight="700">NOUN</text>
+          <circle cx="440" cy="70" r="34" fill="#10b981"/><text x="440" y="74" fill="#fff" font-weight="700">VERB</text>
+          <g stroke="#b9b6dd" stroke-width="2" fill="none" marker-end="url(#a7)">
+            <path d="M154 70 H264"/><path d="M334 70 H404"/>
+          </g>
+          <text x="209" y="58" fill="#737a9c" font-size="11">a(DET,NOUN)</text>
+          <text x="369" y="58" fill="#737a9c" font-size="11">a(NOUN,VERB)</text>
+          <g font-size="11" fill="#6d28d9">
+            <text x="120" y="135">↓ "the"</text><text x="300" y="135">↓ "doctor"</text><text x="440" y="135">↓ "is"</text>
+          </g>
+          <defs><marker id="a7" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#b9b6dd"/></marker></defs>
+        </g>
+      </svg>
+      <div class="figcap">States emit words; transitions move between tags. Decode = find the best hidden state path.</div>
+    </div>
+  </section>
+
+  <!-- NUMERICAL -->
+  <section class="section sec-numerical">
+    <div class="sec-head"><div class="sec-ico">🧮</div><h2>Numerical / Problems</h2></div>
+
+    <h3>Problem A — Markov chain (warm-up)</h3>
+    <p>Weather states with \(P(\text{warm})_{\text{start}}=0.2\) and \(a_{\text{warm,warm}}=0.6\). Probability of four warm days in a row (state path 3-3-3-3):</p>
+    <ol class="steps">
+      <li>\(P=\pi_3\,(a_{33})^3=0.2\times(0.6)^3\)</li>
+      <li>\(=0.2\times0.216\)</li>
+    </ol>
+    <div class="ans"><b>Answer:</b> \(P(\text{warm}^4)=\mathbf{0.0432}\).</div>
+
+    <h3>Problem B — "race": choosing VB vs NN</h3>
+    <p>For "…to <b>race</b> tomorrow", compare the two tag hypotheses with NLTK-style probabilities:</p>
+    <ol class="steps">
+      <li><b>Verb path:</b> \(P(\text{VB}\mid\text{TO})\,P(\text{NR}\mid\text{VB})\,P(\text{race}\mid\text{VB})=0.83\times0.0027\times0.00012=2.7\times10^{-7}\)</li>
+      <li><b>Noun path:</b> \(P(\text{NN}\mid\text{TO})\,P(\text{NR}\mid\text{NN})\,P(\text{race}\mid\text{NN})=0.00047\times0.0012\times0.00057=3.2\times10^{-10}\)</li>
+    </ol>
+    <div class="ans"><b>Answer:</b> the verb path is ~840× larger, so we (correctly) tag <b>race/VB</b>.</div>
+
+    <h3>Problem C — Full Viterbi: "the doctor is in" ⭐</h3>
+    <p>Tagset {Noun, Verb, Det, Prep, Adv}. Use these matrices:</p>
+    <div class="two-col">
+      <div class="tbl-wrap">
+      <table class="data"><caption>Emission \(P(w\mid t)\)</caption>
+        <thead><tr><th>tag</th><th>the</th><th>doctor</th><th>is</th><th>in</th></tr></thead>
+        <tbody>
+          <tr><td class="row-h">Noun</td><td>0</td><td>.4</td><td>.1</td><td>0</td></tr>
+          <tr><td class="row-h">Verb</td><td>0</td><td>.1</td><td>.9</td><td>0</td></tr>
+          <tr><td class="row-h">Det</td><td>.7</td><td>0</td><td>0</td><td>0</td></tr>
+          <tr><td class="row-h">Prep</td><td>0</td><td>0</td><td>0</td><td>1.0</td></tr>
+          <tr><td class="row-h">Adv</td><td>0</td><td>0</td><td>0</td><td>.1</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="tbl-wrap">
+      <table class="data"><caption>Transition \(P(t\mid t_{i-1})\) — rows used</caption>
+        <thead><tr><th>from \ to</th><th>Noun</th><th>Verb</th><th>Det</th><th>Prep</th><th>Adv</th></tr></thead>
+        <tbody>
+          <tr><td class="row-h">&lt;S&gt;</td><td>.3</td><td>.1</td><td>.3</td><td>.2</td><td>.1</td></tr>
+          <tr><td class="row-h">Noun</td><td>.2</td><td>.4</td><td>.01</td><td>.3</td><td>.04</td></tr>
+          <tr><td class="row-h">Verb</td><td>.3</td><td>.05</td><td>.3</td><td>.2</td><td>.1</td></tr>
+          <tr><td class="row-h">Det</td><td>.9</td><td>.01</td><td>.01</td><td>.01</td><td>.07</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <ol class="steps">
+      <li><b>Column 1 ("the").</b> \(v(\text{Det})=P(\text{Det}\mid\langle S\rangle)P(\text{the}\mid\text{Det})=.3\times.7=.21\). All other tags emit "the" with prob 0, so they are 0.</li>
+      <li><b>Column 2 ("doctor").</b> Only Det was non-zero, so paths come from Det:
+        \(v(\text{Noun})=.21\times P(\text{Noun}\mid\text{Det})\times P(\text{doctor}\mid\text{Noun})=.21\times.9\times.4=.0756\);
+        \(v(\text{Verb})=.21\times.01\times.1=.00021\).</li>
+      <li><b>Column 3 ("is").</b>
+        \(v(\text{Verb})=\max(.0756\times.4,\;.00021\times.05)\times P(\text{is}\mid\text{Verb})=.03024\times.9=.027216\);
+        \(v(\text{Noun})=.0756\times.2\times.1=.001512\).</li>
+      <li><b>Column 4 ("in").</b> Only Prep/Adv can emit "in":
+        \(v(\text{Prep})=\max(.001512\times.3,\;.027216\times.2)\times1.0=.0054432\);
+        \(v(\text{Adv})=.027216\times.1\times.1=.000272\). Best final = <b>Prep</b>.</li>
+      <li><b>Backtrace</b> from Prep → came from Verb("is") → from Noun("doctor") → from Det("the").</li>
+    </ol>
+
+    <div class="tbl-wrap">
+    <table class="data"><caption>Completed Viterbi trellis (best value per cell)</caption>
+      <thead><tr><th>tag</th><th>the</th><th>doctor</th><th>is</th><th>in</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">Noun</td><td>0</td><td>.0756</td><td>.001512</td><td>0</td></tr>
+        <tr><td class="row-h">Verb</td><td>0</td><td>.00021</td><td class="hi">.027216</td><td>0</td></tr>
+        <tr><td class="row-h">Det</td><td class="hi">.21</td><td>0</td><td>0</td><td>0</td></tr>
+        <tr><td class="row-h">Prep</td><td>0</td><td>0</td><td>0</td><td class="hi">.005443</td></tr>
+        <tr><td class="row-h">Adv</td><td>0</td><td>0</td><td>0</td><td>.000272</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="ans"><b>Answer:</b> the best tag sequence is <b>the/Det doctor/Noun is/Verb in/Prep</b>.</div>
+
+    <div class="callout c-pitfall"><span class="c-ico">⚠️</span><div class="c-body"><b>Viterbi pitfalls</b>Each cell = (transition into it) × (emission of the current word) × (best previous cell). Take the <b>max</b> over previous states (not the sum — that's the forward algorithm), and remember to keep backpointers or you can't recover the path.</div></div>
+  </section>
+
+  <!-- REAL LIFE / comparison -->
+  <section class="section sec-reallife">
+    <div class="sec-head"><div class="sec-ico">🌍</div><h2>Real-life &amp; model comparison</h2></div>
+    <div class="tbl-wrap">
+    <table class="data">
+      <caption>Cost grows roughly exponentially from rule-based to LLM</caption>
+      <thead><tr><th>Approach</th><th>Accuracy</th><th>Explainability</th><th>Best use today</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">Rule-based</td><td>★★</td><td>★★★★★</td><td>Fixed-domain, edge devices</td></tr>
+        <tr><td class="row-h">Statistical (HMM/CRF)</td><td>★★★★</td><td>★★★★</td><td>Hybrid agent pipelines</td></tr>
+        <tr><td class="row-h">Neural (RNN/CNN)</td><td>★★★★★</td><td>★★★</td><td>Legacy production NLP</td></tr>
+        <tr><td class="row-h">Transformer (BERT)</td><td>★★★★★</td><td>★★</td><td>High-accuracy enterprise</td></tr>
+        <tr><td class="row-h">LLM (implicit)</td><td>★★★★★</td><td>★★</td><td>Agentic AI, flexible semantics</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="deflist">
+      <div class="d"><b>Named-entity recognition &amp; information extraction</b> — sequence labelling of people/places/orgs.</div>
+      <div class="d"><b>Biomedical NLP</b> — disambiguate drug names vs dosage actions.</div>
+      <div class="d"><b>Text-to-speech</b> — correct intonation needs correct tags (question vs statement).</div>
+      <div class="d"><b>Genomics</b> — the same Viterbi labels exon/intron regions in DNA.</div>
+    </div>
+  </section>
+
+  <div class="callout c-formula">
+    <span class="c-ico">📌</span>
+    <div class="c-body"><b>One-line summary</b>HMM scores a tag path as ∏(emission × transition); Viterbi finds the best path in polynomial time via DP + backpointers; MEMM/CRF add discriminative features; Bi-LSTM-CRF and Transformers push accuracy to ~99%.</div>
+  </div>
+
+  <div class="pager">
+    <a class="prev" href="06-pos-tagging.html"><div class="dir">← Previous</div><div class="ttl">6 · POS Tagging</div></a>
+    <a class="next" href="revision.html"><div class="dir">Next →</div><div class="ttl">📝 Revision &amp; Solved Problems</div></a>
+  </div>
+
+</main>
+</div>
+</body>
+</html>

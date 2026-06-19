@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3 · Neural LM · LLM · Prompting — NLP Midsem Hub</title>
+<link rel="stylesheet" href="styles.css">
+<script defer src="app.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<div class="layout">
+<main class="content">
+
+  <div class="page-head">
+    <div class="crumb"><a href="index.html">Home</a> › Topic 3</div>
+    <span class="topic-tag">🧠 Topic 3</span> <span class="mark-badge">4 marks · Problem / application</span>
+    <h1>Neural Language Models, LLMs &amp; Prompt Engineering</h1>
+    <p class="lede">From a single neuron to feedforward neural language models that beat N-grams through embeddings — then up to large language models, prompting, and transfer learning.</p>
+  </div>
+
+  <!-- THEORY -->
+  <section class="section sec-theory">
+    <div class="sec-head"><div class="sec-ico">📘</div><h2>Theory</h2></div>
+
+    <h3>The neural unit</h3>
+    <p>A unit takes a <b>weighted sum</b> of inputs plus a bias, then applies a <b>non-linear activation</b> \(f\):</p>
+    <div class="formula-block">\[ z=\Big(\sum_i w_i x_i\Big)+b=\mathbf{w}\cdot\mathbf{x}+b,\qquad a=f(z) \]</div>
+    <p>Common activations: <b>sigmoid</b> \(\sigma(z)=\frac{1}{1+e^{-z}}\), <b>tanh</b>, and the most common, <b>ReLU</b> \(=\max(0,z)\).</p>
+
+    <h3>The XOR problem → why we need hidden layers</h3>
+    <p>A single <b>perceptron</b> is a linear classifier: \(w_1x_1+w_2x_2+b=0\) is just a line. AND and OR are linearly separable, but <b>XOR is not</b> — no single line separates it (Minsky &amp; Papert, 1969). The fix: stack units into a <b>layered network</b>, whose hidden layer learns a new representation \(h\) in which the classes become separable.</p>
+
+    <h3>Feedforward network &amp; softmax</h3>
+    <p>A 2-layer net (a.k.a. multi-layer perceptron): hidden layer \(\mathbf h=g(W\mathbf x+\mathbf b)\), output \(\mathbf y=\text{softmax}(U\mathbf h)\). Softmax generalises sigmoid to \(k\) classes:</p>
+    <div class="formula-block">\[ \text{softmax}(z_i)=\frac{e^{z_i}}{\sum_{j=1}^{k} e^{z_j}} \]</div>
+
+    <h3>Neural language model</h3>
+    <p>Task: predict word \(w_t\) from prior words \(w_{t-1},w_{t-2},w_{t-3},\dots\) Because sequences vary in length, use a <b>fixed sliding window</b>. Each context word becomes a <b>one-hot vector</b>, looked up in an embedding matrix \(E\); the embeddings are concatenated and fed forward:</p>
+    <div class="formula-block">
+      \[ \mathbf e=[E\mathbf x_{1};\,E\mathbf x_{2};\,E\mathbf x_{3}] \]
+      \[ \mathbf h=g(W\mathbf e+\mathbf b),\qquad \mathbf y=\text{softmax}(U\mathbf h) \]
+    </div>
+    <p>You can either <b>freeze</b> \(E\) at pretrained word2vec values, or <b>learn</b> the embeddings jointly with the network.</p>
+
+    <div class="figure">
+      <svg viewBox="0 0 600 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Feedforward neural language model">
+        <g font-family="Segoe UI, sans-serif" font-size="11" text-anchor="middle">
+          <text x="60" y="20" fill="#737a9c">context words</text>
+          <text x="230" y="20" fill="#737a9c">embeddings e</text>
+          <text x="400" y="20" fill="#737a9c">hidden h</text>
+          <text x="540" y="20" fill="#737a9c">softmax → P(w)</text>
+          <!-- inputs -->
+          <g fill="#6366f1"><rect x="30" y="40" width="60" height="26" rx="6"/><rect x="30" y="100" width="60" height="26" rx="6"/><rect x="30" y="160" width="60" height="26" rx="6"/></g>
+          <g fill="#fff" font-weight="700"><text x="60" y="58">w(t-3)</text><text x="60" y="118">w(t-2)</text><text x="60" y="178">w(t-1)</text></g>
+          <!-- embeddings -->
+          <g fill="#8b5cf6"><circle cx="230" cy="55" r="13"/><circle cx="230" cy="95" r="13"/><circle cx="230" cy="135" r="13"/><circle cx="230" cy="175" r="13"/></g>
+          <!-- hidden -->
+          <g fill="#ec4899"><circle cx="400" cy="75" r="14"/><circle cx="400" cy="120" r="14"/><circle cx="400" cy="165" r="14"/></g>
+          <!-- output -->
+          <g fill="#10b981"><rect x="500" y="95" width="80" height="30" rx="7"/></g>
+          <text x="540" y="115" fill="#fff" font-weight="700">y</text>
+          <g stroke="#d9d6f3" stroke-width="1.2">
+            <path d="M90 53 L217 55"/><path d="M90 113 L217 95"/><path d="M90 173 L217 135"/><path d="M90 173 L217 175"/>
+            <path d="M243 55 L386 75"/><path d="M243 95 L386 120"/><path d="M243 135 L386 165"/><path d="M243 175 L386 120"/>
+            <path d="M414 75 L500 110"/><path d="M414 120 L500 110"/><path d="M414 165 L500 110"/>
+          </g>
+        </g>
+      </svg>
+      <div class="figcap">One-hot inputs → embedding lookup → concatenate → hidden layer → softmax over the vocabulary.</div>
+    </div>
+
+    <h3>From neural LM to LLM</h3>
+    <p>State-of-the-art LMs replace the feedforward window with <b>Transformers</b>, trained on enormous corpora (<b>pretraining</b>). <b>Transfer learning</b> reuses a pretrained model on a new task; <b>fine-tuning</b> updates its weights on a smaller task-specific dataset.</p>
+  </section>
+
+  <!-- INTUITION -->
+  <section class="section sec-intuition">
+    <div class="sec-head"><div class="sec-ico">💡</div><h2>Intuition</h2></div>
+    <p><b>Why neural LMs beat N-grams:</b> they represent context words by <b>embeddings</b>, not raw identity, so similar words share strength.</p>
+    <div class="callout c-tip">
+      <span class="c-ico">🐱</span>
+      <div class="c-body"><b>The cat/dog example</b>Training saw "the <b>cat</b> gets fed" but never "dog gets fed". Test: "I forgot to feed the <b>dog</b>, so the dog gets ___". An N-gram can't predict <i>fed</i> (never seen "dog gets fed"). A neural LM knows <i>cat</i> ≈ <i>dog</i> in embedding space, so it generalises and predicts <i>fed</i>.</div>
+    </div>
+    <p>Trade-off: neural LMs handle longer histories and generalise better, but are more complex, slower, more energy-hungry, and less interpretable — so for small tasks an N-gram can still be the right tool.</p>
+  </section>
+
+  <!-- NUMERICAL -->
+  <section class="section sec-numerical">
+    <div class="sec-head"><div class="sec-ico">🧮</div><h2>Numerical / Problem</h2></div>
+
+    <h3>Problem A — Forward pass of one neuron</h3>
+    <p>A unit has weights \(\mathbf w=[0.2,0.3,0.9]\), bias \(b=0.5\), input \(\mathbf x=[0.5,0.6,0.1]\). Find its sigmoid output.</p>
+    <ol class="steps">
+      <li>Weighted sum: \(\mathbf w\cdot\mathbf x=0.2(0.5)+0.3(0.6)+0.9(0.1)=0.10+0.18+0.09=0.37\).</li>
+      <li>Add bias: \(z=0.37+0.5=0.87\).</li>
+      <li>Sigmoid: \(a=\sigma(0.87)=\dfrac{1}{1+e^{-0.87}}=\dfrac{1}{1+0.419}\).</li>
+    </ol>
+    <div class="ans"><b>Answer:</b> \(a\approx \mathbf{0.705}\).</div>
+
+    <h3>Problem B — Softmax of an output vector</h3>
+    <p>Given pre-activation scores \(\mathbf z=[1,\,2,\,3]\), compute the softmax distribution.</p>
+    <ol class="steps">
+      <li>Exponentiate: \(e^{1}=2.718,\; e^{2}=7.389,\; e^{3}=20.086\).</li>
+      <li>Normaliser: sum \(=30.193\).</li>
+      <li>Divide: \([2.718,\,7.389,\,20.086]/30.193\).</li>
+    </ol>
+    <div class="ans"><b>Answer:</b> \([0.090,\,0.245,\,0.665]\) — sums to 1, and the largest score keeps the largest probability.</div>
+
+    <div class="callout c-exam">
+      <span class="c-ico">🎯</span>
+      <div class="c-body"><b>Application-style question</b>"How many parameters in a feedforward LM with window 3, embedding dim \(d=50\), hidden size \(H=100\), vocab \(|V|=10\text{k}\)?" → embeddings \(|V|\cdot d\), \(W\) is \(H\times 3d\), \(U\) is \(|V|\times H\). Be ready to plug numbers in.</div>
+    </div>
+  </section>
+
+  <!-- REAL LIFE -->
+  <section class="section sec-reallife">
+    <div class="sec-head"><div class="sec-ico">🌍</div><h2>Real-life: LLMs &amp; Prompt Engineering</h2></div>
+    <p><b>Prompting</b> reframes a task as a natural-language instruction to an LLM — often replacing fine-tuning entirely.</p>
+    <div class="deflist">
+      <div class="d"><b>Zero-shot inference</b> — give only the instruction, no examples: <i>"Classify the sentiment: 'The movie dragged.' →"</i></div>
+      <div class="d"><b>Few-shot / in-context learning</b> — include a few solved examples in the prompt, then the new input. The model learns the pattern from context, with no weight updates.</div>
+      <div class="d"><b>Instruction design</b> — be explicit about format: <i>"Output only the word/tag pairs."</i></div>
+    </div>
+    <div class="chips">
+      <span class="chip">🤖 ChatGPT / conversational agents</span>
+      <span class="chip">⌨️ Predictive text</span>
+      <span class="chip">🧑‍💻 Code assistants (CodeAid)</span>
+      <span class="chip">🧰 Generative AI assistants</span>
+    </div>
+    <div class="callout c-note">
+      <span class="c-ico">🔁</span>
+      <div class="c-body"><b>Transfer learning vs fine-tuning</b>Transfer learning <i>freezes</i> the pretrained weights and trains only new layers (e.g. reuse "recognise cars" knowledge to "recognise trucks"). Fine-tuning goes further and <i>updates</i> the pretrained layers too — useful when the new dataset is large and similar.</div>
+    </div>
+  </section>
+
+  <div class="callout c-formula">
+    <span class="c-ico">📌</span>
+    <div class="c-body"><b>One-line summary</b>Neuron = \(f(\mathbf w\!\cdot\!\mathbf x+b)\); stack units to solve non-linear problems like XOR; feed concatenated embeddings to predict the next word; scale up to Transformers/LLMs and steer them with zero-/few-shot prompts.</div>
+  </div>
+
+  <div class="pager">
+    <a class="prev" href="02-language-models.html"><div class="dir">← Previous</div><div class="ttl">2 · Language Models</div></a>
+    <a class="next" href="04-vector-semantics.html"><div class="dir">Next →</div><div class="ttl">4 · Vector Semantics</div></a>
+  </div>
+
+</main>
+</div>
+</body>
+</html>

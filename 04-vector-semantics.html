@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4 · Vector Semantics — NLP Midsem Hub</title>
+<link rel="stylesheet" href="styles.css">
+<script defer src="app.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<div class="layout">
+<main class="content">
+
+  <div class="page-head">
+    <div class="crumb"><a href="index.html">Home</a> › Topic 4</div>
+    <span class="topic-tag">📐 Topic 4</span> <span class="mark-badge">4 marks · Problem</span>
+    <h1>Vector Semantics</h1>
+    <p class="lede">Represent a word's meaning as a vector built from the contexts it appears in. Similar words sit near each other; cosine measures that nearness; TF-IDF down-weights uninformative words.</p>
+  </div>
+
+  <!-- THEORY -->
+  <section class="section sec-theory">
+    <div class="sec-head"><div class="sec-ico">📘</div><h2>Theory</h2></div>
+
+    <h3>The distributional hypothesis</h3>
+    <p>"You shall know a word by the company it keeps." Words that occur in <b>similar contexts</b> tend to have <b>similar meanings</b> (Harris, 1954). Two words with similar neighbouring-word distributions have similar meaning — so we can <b>measure similarity of words by similarity of their contexts</b>.</p>
+
+    <h3>Lexical relations to know</h3>
+    <div class="deflist">
+      <div class="d"><b>Synonymy</b> — same sense, substitutable (couch/sofa). In practice only <i>approximate</i>.</div>
+      <div class="d"><b>Similarity</b> — share meaning but not synonyms (cat/dog, car/bicycle).</div>
+      <div class="d"><b>Relatedness</b> (association) — related without being similar (coffee/cup).</div>
+      <div class="d"><b>Antonymy</b> — opposite on one feature (hot/cold, up/down).</div>
+      <div class="d"><b>Connotation</b> — affective meaning along <i>valence, arousal, dominance</i>.</div>
+    </div>
+
+    <h3>Words and vectors</h3>
+    <p>Build a co-occurrence matrix. A <b>term–document matrix</b> represents each document (column) by word counts; a <b>term–term (word–word) matrix</b> represents each word by counts of words around it. Two words are similar if their context vectors are similar.</p>
+
+    <h3>Similarity: dot product → cosine</h3>
+    <div class="formula-block">
+      <div class="label">Dot product</div>\[ \mathbf a\cdot\mathbf b=\sum_{i=1}^{N} a_i b_i \]
+      <div class="label">Vector length</div>\[ |\mathbf a|=\sqrt{\textstyle\sum_i a_i^2} \]
+      <div class="label">Cosine similarity</div>\[ \cos(\mathbf a,\mathbf b)=\frac{\mathbf a\cdot\mathbf b}{|\mathbf a|\,|\mathbf b|} \]
+    </div>
+    <p>Raw dot product favours <b>long (frequent)</b> vectors, so frequent words like <i>the</i> look "similar" to everything. <b>Cosine normalises</b> by length, measuring only the <i>angle</i>. For non-negative count vectors cosine ranges 0–1 (0 = orthogonal/unrelated, 1 = same direction).</p>
+
+    <h3>TF-IDF — balancing two pressures</h3>
+    <p>Frequency is useful (<i>sugar</i> near <i>apricot</i> is informative) but very frequent words (<i>the, it</i>) are not. TF-IDF resolves the paradox:</p>
+    <div class="formula-block">
+      \[ \text{tf}_{t,d}=\log_{10}\big(\text{count}(t,d)+1\big) \]
+      \[ \text{idf}_t=\log_{10}\frac{N}{\text{df}_t}\qquad(\text{$N$ = #docs, $\text{df}_t$ = #docs containing $t$}) \]
+      \[ \boxed{\;w_{t,d}=\text{tf}_{t,d}\times\text{idf}_t\;} \]
+    </div>
+    <p>A word in <b>every</b> document has \(\text{idf}=\log_{10}1=0\), so its weight vanishes. (A related measure is <b>PPMI</b>, positive pointwise mutual information.)</p>
+
+    <h3>Sparse vs dense</h3>
+    <p>TF-IDF/PMI vectors are <b>long</b> (\(|V|=20\text{k–}50\text{k}\)) and <b>sparse</b>. The alternative — learned <b>dense</b> vectors (length 50–1000) — generalise better and capture synonymy, leading to word2vec/GloVe (next topic).</p>
+  </section>
+
+  <!-- INTUITION -->
+  <section class="section sec-intuition">
+    <div class="sec-head"><div class="sec-ico">💡</div><h2>Intuition</h2></div>
+    <p>What does the unfamiliar word <b>"ongchoi"</b> mean? You see: "Ongchoi is delicious <b>sautéed with garlic</b>", "Ongchoi is superb <b>over rice</b>", "Ongchoi <b>leaves</b> with salty sauces". You've seen the same contexts around <i>spinach</i>, <i>chard</i>, <i>collard greens</i>. Conclusion: <b>ongchoi is a leafy green</b> — learned purely from shared context.</p>
+    <div class="figure">
+      <svg viewBox="0 0 460 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Two word vectors and the cosine angle between them">
+        <g font-family="Segoe UI, sans-serif" font-size="12">
+          <line x1="40" y1="200" x2="430" y2="200" stroke="#cfd2ea" stroke-width="1.5"/>
+          <line x1="40" y1="200" x2="40" y2="20" stroke="#cfd2ea" stroke-width="1.5"/>
+          <text x="424" y="218" fill="#737a9c">"data" dimension</text>
+          <text x="48" y="22" fill="#737a9c">"sugar" dimension</text>
+          <!-- vector A: digital -->
+          <line x1="40" y1="200" x2="360" y2="70" stroke="#0ea5e9" stroke-width="3" marker-end="url(#a)"/>
+          <text x="366" y="66" fill="#0369a1" font-weight="700">digital</text>
+          <!-- vector B: information -->
+          <line x1="40" y1="200" x2="330" y2="55" stroke="#ec4899" stroke-width="3" marker-end="url(#a)"/>
+          <text x="280" y="44" fill="#be185d" font-weight="700">information</text>
+          <!-- vector C: cherry -->
+          <line x1="40" y1="200" x2="150" y2="60" stroke="#10b981" stroke-width="3" marker-end="url(#a)"/>
+          <text x="120" y="52" fill="#047857" font-weight="700">cherry</text>
+          <path d="M95 150 A 60 60 0 0 1 120 120" fill="none" stroke="#f59e0b" stroke-width="2"/>
+          <text x="150" y="135" fill="#b45309" font-size="11">small angle ⇒ cos≈0.99</text>
+          <defs><marker id="a" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#888"/></marker></defs>
+        </g>
+      </svg>
+      <div class="figcap">Cosine cares about <b>angle</b>, not length: <i>digital</i> &amp; <i>information</i> point almost the same way; <i>cherry</i> points elsewhere.</div>
+    </div>
+  </section>
+
+  <!-- NUMERICAL -->
+  <section class="section sec-numerical">
+    <div class="sec-head"><div class="sec-ico">🧮</div><h2>Numerical / Problem</h2></div>
+
+    <h3>Problem A — Cosine similarity</h3>
+    <p>Word–context counts over dimensions (<i>pie, data, computer</i>):</p>
+    <div class="tbl-wrap">
+    <table class="data">
+      <thead><tr><th>word</th><th>pie</th><th>data</th><th>computer</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">cherry</td><td>442</td><td>8</td><td>2</td></tr>
+        <tr><td class="row-h">digital</td><td>5</td><td>1683</td><td>1670</td></tr>
+        <tr><td class="row-h">information</td><td>5</td><td>3982</td><td>3325</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Compute \(\cos(\text{digital},\text{information})\):</p>
+    <ol class="steps">
+      <li>Dot product: \(5(5)+1683(3982)+1670(3325)=25+6{,}701{,}706+5{,}552{,}750=12{,}254{,}481\).</li>
+      <li>Lengths: \(|\text{digital}|=\sqrt{5^2+1683^2+1670^2}=\sqrt{5{,}621{,}414}=2371.0\); \(|\text{information}|=\sqrt{5^2+3982^2+3325^2}=\sqrt{26{,}911{,}974}=5187.7\).</li>
+      <li>Cosine: \(\dfrac{12{,}254{,}481}{2371.0\times5187.7}=\dfrac{12{,}254{,}481}{12{,}299{,}260}\).</li>
+    </ol>
+    <div class="ans"><b>Answer:</b> \(\cos(\text{digital},\text{information})\approx \mathbf{0.996}\) — highly similar. By contrast \(\cos(\text{cherry},\text{information})\approx \mathbf{0.018}\) — essentially unrelated.</div>
+
+    <h3>Problem B — TF-IDF weight</h3>
+    <p>The word <i>wit</i> occurs 20 times in a play; the collection has \(N=37\) documents and <i>wit</i> appears in \(\text{df}=34\) of them.</p>
+    <ol class="steps">
+      <li>\(\text{tf}=\log_{10}(20+1)=\log_{10}21=1.322\).</li>
+      <li>\(\text{idf}=\log_{10}\dfrac{37}{34}=\log_{10}(1.088)=0.037\).</li>
+      <li>\(\text{tf-idf}=1.322\times0.037\).</li>
+    </ol>
+    <div class="ans"><b>Answer:</b> \(\text{tf-idf}(\text{wit})\approx \mathbf{0.049}\). A word like <i>good</i> that appears in <b>every</b> document gets \(\text{idf}=\log_{10}1=0\), so \(\text{tf-idf}=0\).</div>
+
+    <div class="callout c-pitfall">
+      <span class="c-ico">⚠️</span>
+      <div class="c-body"><b>Watch out</b>Use \(\log_{10}\) (base 10) as in the lecture, square <i>every</i> component for the length (including small ones), and remember idf uses <b>document frequency</b>, not total collection frequency.</div>
+    </div>
+  </section>
+
+  <!-- REAL LIFE -->
+  <section class="section sec-reallife">
+    <div class="sec-head"><div class="sec-ico">🌍</div><h2>Real-life examples</h2></div>
+    <div class="deflist">
+      <div class="d"><b>Question answering</b> — "How <b>tall</b> is Mt. Everest?" matches "The official <b>height</b>…" because <i>tall</i> ≈ <i>height</i> in vector space.</div>
+      <div class="d"><b>Information retrieval / search</b> — documents and queries are TF-IDF vectors; rank by cosine to the query.</div>
+      <div class="d"><b>Plagiarism detection</b> — high cosine between document vectors flags copied passages.</div>
+      <div class="d"><b>Paraphrase &amp; summarisation</b> — judging how close two sentences are in meaning.</div>
+    </div>
+  </section>
+
+  <div class="callout c-formula">
+    <span class="c-ico">📌</span>
+    <div class="c-body"><b>One-line summary</b>Meaning = context vector. Compare with <b>cosine</b> (angle, not length). Weight cells with <b>TF-IDF</b> so common words count less. Sparse counts → dense embeddings next.</div>
+  </div>
+
+  <div class="pager">
+    <a class="prev" href="03-neural-llm.html"><div class="dir">← Previous</div><div class="ttl">3 · Neural LM · LLM</div></a>
+    <a class="next" href="05-word-embeddings.html"><div class="dir">Next →</div><div class="ttl">5 · Word Embeddings</div></a>
+  </div>
+
+</main>
+</div>
+</body>
+</html>

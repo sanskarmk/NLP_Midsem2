@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2 · Language Models — NLP Midsem Hub</title>
+<link rel="stylesheet" href="styles.css">
+<script defer src="app.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<div class="layout">
+<main class="content">
+
+  <div class="page-head">
+    <div class="crumb"><a href="index.html">Home</a> › Topic 2</div>
+    <span class="topic-tag">🔢 Topic 2</span> <span class="mark-badge">4 marks · Problem</span>
+    <h1>Language Models (N-gram)</h1>
+    <p class="lede">A language model assigns a probability to a sentence — or predicts the next word. N-gram models do this by counting, with the Markov assumption, smoothing for unseen events, and perplexity for evaluation.</p>
+  </div>
+
+  <!-- THEORY -->
+  <section class="section sec-theory">
+    <div class="sec-head"><div class="sec-ico">📘</div><h2>Theory</h2></div>
+
+    <h3>What a language model computes</h3>
+    <p>A <b>language model (LM)</b> computes either the probability of a whole sentence \(P(W)\), or the probability of the next word \(P(w_n\mid w_1,\dots,w_{n-1})\). In short, it <i>learns to predict the probability of a sequence of words.</i></p>
+
+    <h3>Chain rule → Markov assumption</h3>
+    <p>The exact joint probability factorises by the <b>chain rule</b>:</p>
+    <div class="formula-block">\[ P(w_1 w_2 \dots w_n)=\prod_{k=1}^{n} P(w_k \mid w_1 w_2 \dots w_{k-1}) \]</div>
+    <p>But we can never count long histories like \(P(\text{the}\mid \text{its water is so transparent})\). The <b>Markov assumption</b> truncates the history to the last \(N-1\) words:</p>
+    <div class="formula-block">
+      <div class="label">Bigram (N = 2)</div>\[ P(w_n\mid w_1^{\,n-1})\approx P(w_n\mid w_{n-1}) \]
+    </div>
+
+    <div class="tbl-wrap">
+    <table class="data">
+      <caption>N-gram orders</caption>
+      <thead><tr><th>Model</th><th>Approximation of \(P(w_n\mid \text{history})\)</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">Unigram (N=1)</td><td>\(P(w_n)\) — words independent</td></tr>
+        <tr><td class="row-h">Bigram (N=2)</td><td>\(P(w_n\mid w_{n-1})\)</td></tr>
+        <tr><td class="row-h">Trigram (N=3)</td><td>\(P(w_n\mid w_{n-2}\,w_{n-1})\)</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>N-grams fail on <b>long-distance dependencies</b>: "The computer<u>s</u> which I put in the machine room … <u>are</u> crashing" — the verb agrees with a word far to the left.</p>
+
+    <h3>Estimating bigrams (MLE)</h3>
+    <div class="formula-block">\[ P(w_n\mid w_{n-1})=\frac{C(w_{n-1}\,w_n)}{C(w_{n-1})} \]</div>
+
+    <h3>The zero problem &amp; smoothing</h3>
+    <p>Any bigram unseen in training gets probability 0, which zeroes out the whole sentence. <b>Laplace (add-1) smoothing</b> pretends we saw every bigram once more:</p>
+    <div class="formula-block">
+      \[ P_{\text{Add-1}}(w_n\mid w_{n-1})=\frac{C(w_{n-1}w_n)+1}{C(w_{n-1})+V} \]
+      <div class="label">Add-k (gentler)</div>
+      \[ P_{\text{Add-}k}(w_n\mid w_{n-1})=\frac{C(w_{n-1}w_n)+k}{C(w_{n-1})+kV} \]
+    </div>
+    <p>Here \(V\) is the vocabulary size. Add-1 is a "blunt instrument" for N-grams, but is used to smooth other NLP models.</p>
+
+    <h3>Backoff &amp; interpolation</h3>
+    <div class="deflist">
+      <div class="d"><b>Backoff</b> — use the trigram if you have good evidence, else fall back to bigram, else unigram.</div>
+      <div class="d"><b>Interpolation</b> — always mix all orders (usually works better):</div>
+    </div>
+    <div class="formula-block">\[ \hat P(w_n\mid w_{n-2}w_{n-1})=\lambda_1 P(w_n)+\lambda_2 P(w_n\mid w_{n-1})+\lambda_3 P(w_n\mid w_{n-2}w_{n-1}),\quad \textstyle\sum_i\lambda_i=1 \]</div>
+    <p>The \(\lambda\)'s are tuned on a <b>held-out</b> set. Unknown words are handled with an <span class="mono">&lt;UNK&gt;</span> token (open-vocabulary task).</p>
+  </section>
+
+  <!-- INTUITION -->
+  <section class="section sec-intuition">
+    <div class="sec-head"><div class="sec-ico">💡</div><h2>Intuition</h2></div>
+    <p>The <b>Shannon game</b>: how well can you predict the next word? "I always order pizza with cheese and ___" → <i>mushrooms</i> (0.1), <i>pepperoni</i> (0.1)… <i>and</i> (1e-100). A good model puts <b>high probability on the word that actually occurs</b>. Unigrams are terrible at this because they ignore context entirely.</p>
+    <div class="callout c-tip">
+      <span class="c-ico">🪵</span>
+      <div class="c-body"><b>Why we work in log space</b>Multiplying many tiny probabilities underflows to 0. Adding logs avoids underflow and is faster. So \(\log P(W)=\sum_i \log P(w_i\mid w_{i-1})\).</div>
+    </div>
+    <div class="figure">
+      <svg viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bigram chain diagram">
+        <g font-family="Segoe UI, sans-serif" font-size="13" text-anchor="middle">
+          <rect x="10"  y="42" width="70" height="36" rx="9" fill="#0ea5e9"/><text x="45" y="65" fill="#fff" font-weight="700">&lt;s&gt;</text>
+          <rect x="130" y="42" width="70" height="36" rx="9" fill="#6366f1"/><text x="165" y="65" fill="#fff" font-weight="700">I</text>
+          <rect x="250" y="42" width="70" height="36" rx="9" fill="#8b5cf6"/><text x="285" y="65" fill="#fff" font-weight="700">want</text>
+          <rect x="370" y="42" width="80" height="36" rx="9" fill="#ec4899"/><text x="410" y="65" fill="#fff" font-weight="700">english</text>
+          <rect x="500" y="42" width="80" height="36" rx="9" fill="#10b981"/><text x="540" y="65" fill="#fff" font-weight="700">food</text>
+          <g stroke="#b9b6dd" stroke-width="2" fill="none" marker-end="url(#ar)">
+            <path d="M82 60 H128"/><path d="M202 60 H248"/><path d="M322 60 H368"/><path d="M452 60 H498"/>
+          </g>
+          <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#b9b6dd"/></marker></defs>
+          <text x="105" y="34" fill="#737a9c" font-size="11">P(I|&lt;s&gt;)</text>
+          <text x="225" y="34" fill="#737a9c" font-size="11">P(want|I)</text>
+          <text x="345" y="34" fill="#737a9c" font-size="11">P(english|want)</text>
+          <text x="475" y="34" fill="#737a9c" font-size="11">P(food|english)</text>
+        </g>
+      </svg>
+      <div class="figcap">A bigram model multiplies one transition probability per adjacent pair.</div>
+    </div>
+  </section>
+
+  <!-- NUMERICAL -->
+  <section class="section sec-numerical">
+    <div class="sec-head"><div class="sec-ico">🧮</div><h2>Numerical / Problem</h2></div>
+
+    <h3>Problem A — Bigram probabilities from a mini-corpus</h3>
+    <p>Train a bigram model on this 3-sentence corpus (the classic example):</p>
+    <div class="formula-block">
+      <p><span class="mono">&lt;s&gt; I am Sam &lt;/s&gt;</span><br>
+      <span class="mono">&lt;s&gt; Sam I am &lt;/s&gt;</span><br>
+      <span class="mono">&lt;s&gt; I do not like green eggs and ham &lt;/s&gt;</span></p>
+    </div>
+    <ol class="steps">
+      <li>Count the start word. <span class="mono">&lt;s&gt;</span> appears 3 times; it is followed by <i>I</i> twice and <i>Sam</i> once. So \(P(\text{I}\mid \langle s\rangle)=\tfrac{2}{3},\; P(\text{Sam}\mid \langle s\rangle)=\tfrac{1}{3}\).</li>
+      <li><i>I</i> occurs 3 times → "I am" ×2, "I do" ×1: \(P(\text{am}\mid \text{I})=\tfrac{2}{3},\; P(\text{do}\mid \text{I})=\tfrac{1}{3}\).</li>
+      <li><i>am</i> occurs 2 times → "am Sam", "am &lt;/s&gt;": \(P(\text{Sam}\mid \text{am})=\tfrac12,\; P(\langle/s\rangle\mid \text{am})=\tfrac12\).</li>
+      <li><i>Sam</i> occurs 2 times → "Sam &lt;/s&gt;", "Sam I": \(P(\langle/s\rangle\mid \text{Sam})=\tfrac12,\; P(\text{I}\mid \text{Sam})=\tfrac12\).</li>
+    </ol>
+    <div class="ans"><b>Sentence probability:</b> \(P(\langle s\rangle\,\text{I am Sam}\,\langle/s\rangle)=\tfrac23\cdot\tfrac23\cdot\tfrac12\cdot\tfrac12=\tfrac{4}{36}=\mathbf{0.111}\).</div>
+
+    <h3>Problem B — Laplace (add-1) smoothing</h3>
+    <p>From the Berkeley Restaurant corpus: \(C(\text{i, want})=827\), \(C(\text{i})=2533\), vocabulary \(V=1446\).</p>
+    <ol class="steps">
+      <li>Unsmoothed: \(P(\text{want}\mid \text{i})=\dfrac{827}{2533}=0.327\).</li>
+      <li>Add-1: \(P^{*}(\text{want}\mid \text{i})=\dfrac{827+1}{2533+1446}=\dfrac{828}{3979}\).</li>
+      <li>Evaluate: \(=\mathbf{0.208}\) — the count mass is "borrowed" and spread over unseen bigrams.</li>
+    </ol>
+    <div class="ans"><b>Answer:</b> smoothing drops \(P(\text{want}\mid\text{i})\) from 0.327 → 0.21, but a zero like \(P(\text{to}\mid\text{i})\) becomes \(\tfrac{0+1}{3979}=0.00025\) instead of 0.</div>
+
+    <h3>Problem C — Perplexity</h3>
+    <div class="formula-block">\[ PP(W)=P(w_1\dots w_N)^{-\frac1N}=\sqrt[\,N\,]{\prod_{i=1}^{N}\frac{1}{P(w_i\mid w_{i-1})}} \]</div>
+    <p>A model assigns probability \(\tfrac{1}{10}\) to each digit of a random digit string. Then</p>
+    <div class="ans"><b>Answer:</b> \(PP=\big((\tfrac1{10})^{N}\big)^{-1/N}=10\). Perplexity = the model's average <b>branching factor</b>. Lower is better: on WSJ, unigram = 962, bigram = 170, trigram = 109.</div>
+
+    <div class="callout c-pitfall">
+      <span class="c-ico">⚠️</span>
+      <div class="c-body"><b>Common slips</b>(1) Forgetting <span class="mono">&lt;/s&gt;</span> in the sentence probability. (2) Using \(+kV\) not \(+V\) when \(k\neq1\). (3) Perplexity uses the \(-\tfrac1N\) power — minimising perplexity = maximising probability.</div>
+    </div>
+  </section>
+
+  <!-- REAL LIFE -->
+  <section class="section sec-reallife">
+    <div class="sec-head"><div class="sec-ico">🌍</div><h2>Real-life examples</h2></div>
+    <p>Language models pick the more fluent option among candidates:</p>
+    <div class="deflist">
+      <div class="d"><b>Machine translation</b> — \(P(\text{high winds tonight}) > P(\text{large winds tonight})\).</div>
+      <div class="d"><b>Spelling correction</b> — \(P(\text{about fifteen minutes from}) > P(\text{about fifteen minuets from})\).</div>
+      <div class="d"><b>Speech recognition</b> — \(P(\text{I saw a van}) \gg P(\text{eyes awe of an})\).</div>
+      <div class="d"><b>Autocomplete / predictive text</b> — your phone suggesting the next word; Google's web-scale N-gram release.</div>
+    </div>
+  </section>
+
+  <div class="callout c-formula">
+    <span class="c-ico">📌</span>
+    <div class="c-body"><b>One-line summary</b>Chain rule + Markov assumption → count bigrams (MLE), patch zeros with smoothing/interpolation, and judge the model with perplexity (lower = better).</div>
+  </div>
+
+  <div class="pager">
+    <a class="prev" href="01-introduction.html"><div class="dir">← Previous</div><div class="ttl">1 · Introduction</div></a>
+    <a class="next" href="03-neural-llm.html"><div class="dir">Next →</div><div class="ttl">3 · Neural LM · LLM · Prompting</div></a>
+  </div>
+
+</main>
+</div>
+</body>
+</html>

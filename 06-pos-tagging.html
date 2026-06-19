@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6 · POS Tagging — NLP Midsem Hub</title>
+<link rel="stylesheet" href="styles.css">
+<script defer src="app.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<div class="layout">
+<main class="content">
+
+  <div class="page-head">
+    <div class="crumb"><a href="index.html">Home</a> › Topic 6</div>
+    <span class="topic-tag">🏷️ Topic 6</span> <span class="mark-badge">4 marks · Problem</span>
+    <h1>Part-of-Speech (POS) Tagging</h1>
+    <p class="lede">Assign a lexical class (noun, verb, …) to every word in a sentence. The challenge is ambiguity: the same word can take different tags depending on context, so tagging is a sequence-classification problem.</p>
+  </div>
+
+  <!-- THEORY -->
+  <section class="section sec-theory">
+    <div class="sec-head"><div class="sec-ico">📘</div><h2>Theory</h2></div>
+
+    <h3>What POS tagging is</h3>
+    <p>The process of assigning a <b>part-of-speech / lexical-class marker</b> to each word in a sentence (and across a whole collection).</p>
+    <div class="formula-block">
+      <p><b>Input:</b> <span class="mono">the lead paint is unsafe</span><br>
+      <b>Output:</b> <span class="mono">the/Det lead/N paint/N is/V unsafe/Adj</span></p>
+    </div>
+
+    <h3>Open vs closed classes</h3>
+    <div class="two-col">
+      <div class="callout c-note" style="margin:0"><span class="c-ico">🔓</span><div class="c-body"><b>Open class</b> (new words appear constantly) — English has 4: <b>Nouns, Verbs, Adjectives, Adverbs</b>.</div></div>
+      <div class="callout c-note" style="margin:0"><span class="c-ico">🔒</span><div class="c-body"><b>Closed class</b> (small, fixed) — prepositions (of, in, by), auxiliaries (may, can, will), pronouns (I, you, she), determiners. Mostly function words.</div></div>
+    </div>
+
+    <h3>Choosing a tagset</h3>
+    <p>We could use a coarse set (N, V, Adj, Adv) but the standard is the <b>Penn Treebank tagset (45 tags)</b> — e.g. <span class="tag-pos">NN</span> noun, <span class="tag-pos">NNS</span> plural noun, <span class="tag-pos">VB</span> verb, <span class="tag-pos">VBZ</span> 3sg-present verb, <span class="tag-pos">JJ</span> adjective, <span class="tag-pos">DT</span> determiner, <span class="tag-pos">IN</span> preposition, <span class="tag-pos">RB</span> adverb. Prepositions &amp; subordinating conjunctions are both <span class="tag-pos">IN</span>; the word "to" gets its own tag <span class="tag-pos">TO</span>.</p>
+    <p>Example: <span class="mono">The/DT grand/JJ jury/NN commented/VBD on/IN a/DT number/NN of/IN other/JJ topics/NNS ./.</span></p>
+
+    <h3>Why it's hard: words have several tags</h3>
+    <p>The word <b>"back"</b> alone:</p>
+    <div class="tbl-wrap">
+    <table class="data">
+      <thead><tr><th>Sentence</th><th>Tag of "back"</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">The <b>back</b> door</td><td><span class="tag-pos">JJ</span> (adjective)</td></tr>
+        <tr><td class="row-h">On my <b>back</b></td><td><span class="tag-pos">NN</span> (noun)</td></tr>
+        <tr><td class="row-h">Win the voters <b>back</b></td><td><span class="tag-pos">RB</span> (adverb)</td></tr>
+        <tr><td class="row-h">Promised to <b>back</b> the bill</td><td><span class="tag-pos">VB</span> (verb)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>POS tagging = sequence classification</h3>
+    <p>Given an observed word sequence \(w_1\dots w_n\), choose the <b>tag sequence that is most probable</b> over all possible sequences. Out of the whole universe of tag sequences, pick the best one:</p>
+    <div class="formula-block">\[ \hat t_1^{\,n}=\operatorname*{arg\,max}_{t_1^{\,n}} P(t_1^{\,n}\mid w_1^{\,n}) \]</div>
+    <p>Approaches (cost &amp; accuracy rise together): <b>rule-based</b> → <b>statistical (HMM/CRF)</b> → <b>neural (RNN/CNN)</b> → <b>Transformer</b> → <b>LLM</b> (covered in Topic 7).</p>
+  </section>
+
+  <!-- INTUITION -->
+  <section class="section sec-intuition">
+    <div class="sec-head"><div class="sec-ico">💡</div><h2>Intuition</h2></div>
+    <p>Tagging is "decode the grammar from context." Two clues do almost all the work:</p>
+    <div class="deflist">
+      <div class="d"><b>Tag–tag context</b> — a determiner is very likely followed by a noun or adjective: <span class="mono">DT → NN</span>, <span class="mono">DT → JJ</span>.</div>
+      <div class="d"><b>Word–tag preference</b> — most words have one dominant tag; "is" is almost always <span class="tag-pos">VBZ</span>.</div>
+    </div>
+    <div class="callout c-tip"><span class="c-ico">🎲</span><div class="c-body"><b>Baseline that's hard to beat</b>Just assign each word its <i>most frequent</i> tag from training. This "most-frequent-tag" baseline already reaches ~90%+ — context models (HMM/Viterbi) fix the ambiguous remainder.</div></div>
+  </section>
+
+  <!-- NUMERICAL -->
+  <section class="section sec-numerical">
+    <div class="sec-head"><div class="sec-ico">🧮</div><h2>Numerical / Problem</h2></div>
+    <p>Estimate tag probabilities by <b>counting</b> in a small tagged corpus:</p>
+    <div class="formula-block">
+      <p><span class="mono">the/DT Employees/NNS pass/VB an/DT exam/NN ./STOP</span><br>
+      <span class="mono">the/DT employees/NNS wait/VB for/IN the/DT pass/VB ./STOP</span><br>
+      <span class="mono">employers/NNS fire/VB employees/NNS ./STOP</span></p>
+    </div>
+    <p>Transition probability \(P(t_i\mid t_{i-1})=\dfrac{C(t_{i-1},t_i)}{C(t_{i-1})}\); emission \(P(w\mid t)=\dfrac{C(t,w)}{C(t)}\).</p>
+
+    <h3>Problem A — Transition \(P(\text{NNS}\mid \text{DT})\)</h3>
+    <ol class="steps">
+      <li>Count DT as a source tag: it appears 4 times (the, an, the, the).</li>
+      <li>Of those, DT is followed by NNS twice (the→Employees, the→employees).</li>
+      <li>\(P(\text{NNS}\mid\text{DT})=\dfrac{2}{4}=0.5\). (Likewise \(P(\text{VB}\mid\text{DT})=\tfrac14\), \(P(\text{NN}\mid\text{DT})=\tfrac14\).)</li>
+    </ol>
+
+    <h3>Problem B — Transition \(P(\text{VB}\mid \text{NNS})\)</h3>
+    <ol class="steps">
+      <li>NNS occurs 4 times as a source tag.</li>
+      <li>It is followed by VB three times and by STOP once.</li>
+      <li>\(P(\text{VB}\mid\text{NNS})=\dfrac{3}{4}=0.75\), \(P(\text{STOP}\mid\text{NNS})=\tfrac14\).</li>
+    </ol>
+
+    <h3>Problem C — Emission \(P(\text{pass}\mid \text{VB})\)</h3>
+    <ol class="steps">
+      <li>VB occurs 4 times (pass, wait, pass, fire).</li>
+      <li>The word "pass" is tagged VB twice.</li>
+      <li>\(P(\text{pass}\mid\text{VB})=\dfrac{2}{4}=0.5\).</li>
+    </ol>
+    <div class="ans"><b>Answers:</b> \(P(\text{NNS}\mid\text{DT})=0.5\), \(P(\text{VB}\mid\text{NNS})=0.75\), \(P(\text{pass}\mid\text{VB})=0.5\). These two tables (transition + emission) are exactly the HMM parameters used by Viterbi in Topic 7.</div>
+
+    <div class="callout c-pitfall"><span class="c-ico">⚠️</span><div class="c-body"><b>Careful</b>Transitions condition on the <i>previous tag</i> (divide by count of the source tag); emissions condition on the <i>current tag</i> (divide by count of that tag, not the word). Treat upper/lower case consistently when counting.</div></div>
+  </section>
+
+  <!-- REAL LIFE -->
+  <section class="section sec-reallife">
+    <div class="sec-head"><div class="sec-ico">🌍</div><h2>Real-life examples</h2></div>
+    <div class="deflist">
+      <div class="d"><b>Search query understanding</b> — distinguishing nouns from actions: "<b>play</b> cricket rules" vs "cricket <b>playstation</b> game".</div>
+      <div class="d"><b>Voice assistants &amp; chatbots</b> — separate commands/actions (verbs) from targets (nouns).</div>
+      <div class="d"><b>Information extraction / NER</b> — find noun phrases / entities in finance, legal, healthcare text.</div>
+      <div class="d"><b>Grammar &amp; writing assistants</b> — detect wrong verb forms or mismatched phrases.</div>
+    </div>
+    <div class="callout c-note"><span class="c-ico">🛡️</span><div class="c-body"><b>Safety in agentic AI</b>User: <i>"Set the timer for the oven to 10 minutes."</i> POS tagging grounds it: <i>set</i> = Verb (action), <i>the timer</i> = noun phrase (object), <i>for the oven</i> = prepositional phrase (context), <i>10 minutes</i> = time parameter. This stops the agent from dangerously interpreting it as "turn on the oven" — it picks the Timer API, not the Oven API.</div></div>
+  </section>
+
+  <div class="callout c-formula">
+    <span class="c-ico">📌</span>
+    <div class="c-body"><b>One-line summary</b>POS tagging = pick the most probable tag sequence for a sentence. The hard part is ambiguity ("back" = JJ/NN/RB/VB); the parameters are just counted transition \(P(t_i\mid t_{i-1})\) and emission \(P(w\mid t)\) probabilities.</div>
+  </div>
+
+  <div class="pager">
+    <a class="prev" href="05-word-embeddings.html"><div class="dir">← Previous</div><div class="ttl">5 · Word Embeddings</div></a>
+    <a class="next" href="07-pos-models.html"><div class="dir">Next →</div><div class="ttl">7 · Statistical / ML / Neural POS</div></a>
+  </div>
+
+</main>
+</div>
+</body>
+</html>

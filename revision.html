@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revision &amp; Solved Problems — NLP Midsem Hub</title>
+<link rel="stylesheet" href="styles.css">
+<script defer src="app.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<div class="layout">
+<main class="content">
+
+  <div class="page-head">
+    <div class="crumb"><a href="index.html">Home</a> › Revision</div>
+    <span class="topic-tag">📝 Exam Prep</span> <span class="mark-badge">Mid-Semester · 30 marks</span>
+    <h1>Revision &amp; Solved Problems</h1>
+    <p class="lede">The official mid-sem question-paper pattern, followed by <b>three fully-solved problems for every topic</b> (21 in total). Try each problem first, then expand the solution.</p>
+  </div>
+
+  <!-- EXAM PATTERN -->
+  <section class="section sec-theory">
+    <div class="sec-head"><div class="sec-ico">📋</div><h2>EC2 — Midsem Examination · Question-Paper Pattern</h2></div>
+    <p><b>Total Marks: 30</b></p>
+    <h3 style="color:var(--exam-ink)">Question types</h3>
+    <div class="chips">
+      <span class="chip">🧮 Numerical Problems</span>
+      <span class="chip">🗂️ Scenario-Based Case Studies</span>
+      <span class="chip">💡 Conceptual Questions</span>
+    </div>
+    <h3 style="color:var(--exam-ink)">Instructions</h3>
+    <ul>
+      <li>Questions may contain sub-divisions.</li>
+      <li>The examination assesses both <b>conceptual understanding</b> and <b>problem-solving ability</b>.</li>
+      <li>Students are expected to <b>justify answers</b> wherever appropriate.</li>
+    </ul>
+    <div class="tbl-wrap">
+    <table class="data exam-table">
+      <thead><tr><th style="text-align:left">Topic</th><th>Marks</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">Introduction (Applications)</td><td>4</td></tr>
+        <tr><td class="row-h">Language Models (Problem)</td><td>4</td></tr>
+        <tr><td class="row-h">Neural Language Models &amp; Introduction to LLM and Prompt Engineering (Problem / application oriented)</td><td>4</td></tr>
+        <tr><td class="row-h">Vector Semantics (Problem)</td><td>4</td></tr>
+        <tr><td class="row-h">Word Embedding (Problem)</td><td>5</td></tr>
+        <tr><td class="row-h">POS Tagging (Problem)</td><td>4</td></tr>
+        <tr><td class="row-h">Statistical, ML &amp; Neural models of POS tagging (Problem / application oriented)</td><td>4</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="callout c-tip" style="margin-bottom:0"><span class="c-ico">🧭</span><div class="c-body"><b>How to revise with this page</b>Each topic below has a numerical, a scenario, and a conceptual problem — mirroring the three question types. Solutions are hidden by default so you can self-test.</div></div>
+  </section>
+
+  <!-- ============ TOPIC 1 ============ -->
+  <div class="rev-topic"><div class="rt-num" style="background:#6366f1">1</div><h2>Introduction &amp; Applications</h2><span class="mk">4 marks</span></div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">1</div><div class="p-title">Identify the level of language violated</div><div class="p-type">Conceptual</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> For each sentence, state which level of language analysis it violates: (a) "Large have green ideas nose"; (b) "Green ideas have large noses"; (c) "She cuts banana with a pen".</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li><b>(a) Syntactic.</b> The words are all valid (lexically fine) but they are not arranged into a grammatical structure — subject/verb/object order is broken.</li>
+          <li><b>(b) Semantic.</b> It is perfectly grammatical (syntactically fine) but meaningless — ideas cannot literally be green or have noses.</li>
+          <li><b>(c) Pragmatic.</b> It is grammatical and even semantically parse-able, but in real-world use it serves no sensible purpose (you don't cut a banana with a pen).</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> (a) syntactic, (b) semantic, (c) pragmatic. Each higher level can be violated while the lower one is satisfied.</div>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">2</div><div class="p-title">Evaluate an NER system</div><div class="p-type">Numerical</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> A Named-Entity Recognition system predicts 50 entities, of which 35 are correct. The gold standard contains 40 true entities. Compute precision, recall and F₁.</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li>\(TP=35\); \(FP=50-35=15\); \(FN=40-35=5\).</li>
+          <li>Precision \(=\dfrac{35}{35+15}=\dfrac{35}{50}=0.70\).</li>
+          <li>Recall \(=\dfrac{35}{35+5}=\dfrac{35}{40}=0.875\).</li>
+          <li>\(F_1=\dfrac{2(0.70)(0.875)}{0.70+0.875}=\dfrac{1.225}{1.575}=0.778\).</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> P = 0.70, R = 0.875, F₁ ≈ <b>0.78</b>.</div>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">3</div><div class="p-title">Classify the ambiguity &amp; name an application</div><div class="p-type">Scenario</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> A chatbot receives: "I saw the man with the telescope." (a) What kind of ambiguity is this? (b) Name two more ambiguity types with an example each. (c) Which NLP application most directly needs this resolved?</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li><b>(a) Structural ambiguity</b> — did I use the telescope to see, or did the man have the telescope? Two valid parse structures.</li>
+          <li><b>(b)</b> <i>Lexical</i>: "bank" = river bank vs financial bank (homonymy). <i>Grammatical/POS</i>: "can" = noun (container) / modal / verb.</li>
+          <li><b>(c)</b> Any understanding task — e.g. <b>question answering</b> or a <b>dialogue/voice assistant</b> — must commit to one interpretation to act correctly.</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> structural ambiguity; resolved using context/world-knowledge; critical for QA and dialogue systems.</div>
+      </div></details>
+    </div>
+  </div>
+
+  <!-- ============ TOPIC 2 ============ -->
+  <div class="rev-topic"><div class="rt-num" style="background:#0ea5e9">2</div><h2>Language Models (N-gram)</h2><span class="mk">4 marks</span></div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">1</div><div class="p-title">Bigram probabilities &amp; sentence probability</div><div class="p-type">Numerical</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> Train a bigram model on:<br><span class="mono">&lt;s&gt; I love NLP &lt;/s&gt;</span> · <span class="mono">&lt;s&gt; I love deep learning &lt;/s&gt;</span> · <span class="mono">&lt;s&gt; I study NLP &lt;/s&gt;</span><br>Find \(P(\text{love}\mid\text{I})\), \(P(\text{NLP}\mid\text{love})\), and \(P(\langle s\rangle\text{ I love NLP }\langle/s\rangle)\).</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li>\(\langle s\rangle\) occurs 3 times, always followed by I → \(P(\text{I}\mid\langle s\rangle)=3/3=1\).</li>
+          <li>I occurs 3 times → "I love" ×2, "I study" ×1 → \(P(\text{love}\mid\text{I})=\dfrac{2}{3}\).</li>
+          <li>love occurs 2 times → "love NLP" ×1, "love deep" ×1 → \(P(\text{NLP}\mid\text{love})=\dfrac{1}{2}\).</li>
+          <li>NLP occurs 2 times, both followed by \(\langle/s\rangle\) → \(P(\langle/s\rangle\mid\text{NLP})=1\).</li>
+          <li>Sentence: \(1\times\tfrac23\times\tfrac12\times1=\tfrac13\).</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> \(P(\text{love}\mid\text{I})=\tfrac23\), \(P(\text{NLP}\mid\text{love})=\tfrac12\), sentence probability \(=\tfrac13\approx0.333\).</div>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">2</div><div class="p-title">Add-1 (Laplace) smoothing</div><div class="p-type">Numerical</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> Given \(C(\text{eat, lunch})=2\), \(C(\text{eat})=10\), vocabulary \(V=15\). Compute the Laplace-smoothed \(P(\text{lunch}\mid\text{eat})\) and the smoothed probability of the unseen bigram \(P(\text{dinner}\mid\text{eat})\).</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li>\(P_{+1}(\text{lunch}\mid\text{eat})=\dfrac{2+1}{10+15}=\dfrac{3}{25}=0.12\).</li>
+          <li>Unseen: \(C(\text{eat, dinner})=0\) → \(P_{+1}=\dfrac{0+1}{10+15}=\dfrac{1}{25}=0.04\).</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> 0.12 and 0.04 — the zero is now non-zero, at the cost of lowering the seen bigram from \(2/10=0.20\) to 0.12.</div>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">3</div><div class="p-title">Perplexity</div><div class="p-type">Numerical / Conceptual</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> A bigram model assigns total probability \(P(W)=10^{-5}\) to a test set of \(N=5\) words. (a) Find the perplexity. (b) If a second model gives perplexity 80 on the same set, which model is better and why?</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li>\(PP(W)=P(W)^{-1/N}=(10^{-5})^{-1/5}=10^{1}=10\).</li>
+          <li>Lower perplexity = better (it assigns higher probability to the real data). \(10<80\), so the first model is better.</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> (a) PP = <b>10</b>. (b) The first model (PP 10) is better — minimising perplexity is equivalent to maximising \(P(\text{test set})\).</div>
+      </div></details>
+    </div>
+  </div>
+
+  <!-- ============ TOPIC 3 ============ -->
+  <div class="rev-topic"><div class="rt-num" style="background:#ec4899">3</div><h2>Neural LM · LLM · Prompting</h2><span class="mk">4 marks</span></div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">1</div><div class="p-title">Forward pass of a neuron</div><div class="p-type">Numerical</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> A unit has weights \(\mathbf w=[0.3,0.5]\), bias \(b=0.1\), input \(\mathbf x=[2,1]\). Compute the output under (a) sigmoid and (b) ReLU.</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li>\(z=\mathbf w\cdot\mathbf x+b=0.3(2)+0.5(1)+0.1=0.6+0.5+0.1=1.2\).</li>
+          <li>Sigmoid: \(\sigma(1.2)=\dfrac{1}{1+e^{-1.2}}=\dfrac{1}{1+0.301}=0.769\).</li>
+          <li>ReLU: \(\max(0,1.2)=1.2\).</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> sigmoid ≈ <b>0.77</b>, ReLU = <b>1.2</b>.</div>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">2</div><div class="p-title">Softmax over output scores</div><div class="p-type">Numerical</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> An output layer produces scores \(\mathbf z=[2,1,0]\) for three next-word candidates. Compute the softmax probabilities.</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li>Exponentiate: \(e^2=7.389,\ e^1=2.718,\ e^0=1\).</li>
+          <li>Sum \(=11.107\).</li>
+          <li>Divide: \([7.389,2.718,1]/11.107\).</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> \([0.665,\;0.245,\;0.090]\) — the highest score keeps the highest probability and they sum to 1.</div>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">3</div><div class="p-title">Why neural LMs beat N-grams; prompting modes</div><div class="p-type">Conceptual</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> (a) Using the "cat/dog" idea, explain why a neural LM generalises better than an N-gram. (b) Define zero-shot and few-shot prompting.</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li><b>(a)</b> Training saw "the cat gets fed" but never "dog gets fed". An N-gram sees "dog" and "cat" as unrelated symbols, so it can't predict "fed" after "dog". A neural LM represents words by <b>embeddings</b>; since "cat" and "dog" have similar vectors, it transfers what it learned about cat to dog and predicts "fed".</li>
+          <li><b>(b) Zero-shot:</b> give only an instruction, no examples. <b>Few-shot (in-context learning):</b> include a handful of solved examples in the prompt before the new input; the model infers the pattern with no weight updates.</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> embeddings give generalisation across similar words; zero-shot = instruction only, few-shot = instruction + examples.</div>
+      </div></details>
+    </div>
+  </div>
+
+  <!-- ============ TOPIC 4 ============ -->
+  <div class="rev-topic"><div class="rt-num" style="background:#10b981">4</div><h2>Vector Semantics</h2><span class="mk">4 marks</span></div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">1</div><div class="p-title">Cosine similarity</div><div class="p-type">Numerical</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> Compute the cosine similarity between \(\mathbf a=[1,2,2]\) and \(\mathbf b=[2,1,2]\).</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li>Dot product: \(1(2)+2(1)+2(2)=2+2+4=8\).</li>
+          <li>Lengths: \(|\mathbf a|=\sqrt{1+4+4}=3\); \(|\mathbf b|=\sqrt{4+1+4}=3\).</li>
+          <li>\(\cos=\dfrac{8}{3\times3}=\dfrac{8}{9}\).</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> \(\cos(\mathbf a,\mathbf b)=0.889\) — quite similar (small angle).</div>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">2</div><div class="p-title">TF-IDF weight</div><div class="p-type">Numerical</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> A term occurs 100 times in a document. The collection has \(N=1000\) documents and the term appears in \(\text{df}=10\) of them. Compute its TF-IDF (use \(\log_{10}\)). What is the TF-IDF of a term occurring in all 1000 documents?</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li>\(\text{tf}=\log_{10}(100+1)=\log_{10}101=2.004\).</li>
+          <li>\(\text{idf}=\log_{10}\dfrac{1000}{10}=\log_{10}100=2\).</li>
+          <li>\(\text{tf-idf}=2.004\times2=4.008\).</li>
+          <li>Term in all docs: \(\text{idf}=\log_{10}\dfrac{1000}{1000}=0\Rightarrow\text{tf-idf}=0\).</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> ≈ <b>4.01</b>; a term in every document gets weight <b>0</b> (uninformative).</div>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">3</div><div class="p-title">Why cosine, not raw dot product?</div><div class="p-type">Conceptual</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> Query vector \(\mathbf q=[1,1]\). Doc A \(=[1,1]\) (rare word), Doc B \(=[10,10]\) (very frequent word, same direction). Compute dot products and cosines, and explain which metric is fairer.</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li>Dot: \(\mathbf q\cdot A=1+1=2\); \(\mathbf q\cdot B=10+10=20\). Dot product ranks B far higher just because it's longer/more frequent.</li>
+          <li>Cosine: both point the same way → \(\cos(\mathbf q,A)=\cos(\mathbf q,B)=1\).</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> raw dot product over-favours long (frequent) vectors; <b>cosine normalises by length</b> so it compares direction only — the fairer similarity for words/documents.</div>
+      </div></details>
+    </div>
+  </div>
+
+  <!-- ============ TOPIC 5 ============ -->
+  <div class="rev-topic"><div class="rt-num" style="background:#f59e0b">5</div><h2>Word Embeddings</h2><span class="mk">5 marks</span></div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">1</div><div class="p-title">SGNS: probability &amp; prediction error</div><div class="p-type">Numerical</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> Target \(\mathbf w=[0.2,-0.1,0.3]\). Positive context \(\mathbf c_{pos}=[0.5,0.5,-0.2]\); one negative \(\mathbf c_{neg}=[-0.4,0.1,0.6]\). Compute \(P(+\mid w,c_{pos})\) and the prediction error \((\sigma-t)\) for both words.</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li>Positive dot: \(0.2(0.5)+(-0.1)(0.5)+0.3(-0.2)=0.10-0.05-0.06=-0.01\). \(P(+)=\sigma(-0.01)=0.4975\).</li>
+          <li>Positive error: \(\sigma-t=0.4975-1=-0.5025\).</li>
+          <li>Negative dot: \(0.2(-0.4)+(-0.1)(0.1)+0.3(0.6)=-0.08-0.01+0.18=0.09\). \(\sigma(0.09)=0.5225\).</li>
+          <li>Negative error: \(\sigma-t=0.5225-0=0.5225\).</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> \(P(+\mid w,c_{pos})\approx0.498\); errors: positive \(-0.503\), negative \(+0.522\). The signs push \(\mathbf w\) toward the positive context and away from the negative.</div>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">2</div><div class="p-title">Analogy by vector arithmetic</div><div class="p-type">Numerical</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> Given king \(=[0.9,0.8]\), man \(=[0.8,0.1]\), woman \(=[0.2,0.9]\). Compute <b>king − man + woman</b> and state which word it should be closest to (queen \(=[0.3,1.6]\)).</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li>Dim 1: \(0.9-0.8+0.2=0.3\).</li>
+          <li>Dim 2: \(0.8-0.1+0.9=1.6\).</li>
+          <li>Result \(=[0.3,1.6]\), exactly the queen vector.</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> king − man + woman \(=[0.3,1.6]\approx\) <b>queen</b> — the parallelogram model of analogy.</div>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">3</div><div class="p-title">CBOW vs Skip-gram &amp; the two matrices</div><div class="p-type">Conceptual</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> (a) State two differences between CBOW and skip-gram. (b) Why does SGNS use negative sampling? (c) Which two matrices does skip-gram learn and how is the final word vector formed?</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li><b>(a)</b> Skip-gram predicts <i>context from centre</i>, works well on small data and rare words. CBOW predicts <i>centre from context</i>, trains faster and is slightly better on frequent words.</li>
+          <li><b>(b)</b> A full softmax over the whole vocabulary is expensive. Negative sampling replaces it with a cheap binary task: separate the true context word from a few random "negative" words.</li>
+          <li><b>(c)</b> A target matrix \(W\) and a context matrix \(C\); the final vector for word \(i\) is commonly \(\mathbf w_i+\mathbf c_i\).</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> direction of prediction + data efficiency differ; negative sampling avoids the costly full softmax; word vector = sum of target &amp; context embeddings.</div>
+      </div></details>
+    </div>
+  </div>
+
+  <!-- ============ TOPIC 6 ============ -->
+  <div class="rev-topic"><div class="rt-num" style="background:#8b5cf6">6</div><h2>POS Tagging</h2><span class="mk">4 marks</span></div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">1</div><div class="p-title">Count transition &amp; emission probabilities</div><div class="p-type">Numerical</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> From the tagged corpus<br><span class="mono">dogs/NNS bark/VB ./.</span> · <span class="mono">the/DT dog/NN barks/VB ./.</span> · <span class="mono">a/DT cat/NN sleeps/VB ./.</span><br>find \(P(\text{NN}\mid\text{DT})\), \(P(\text{VB}\mid\text{NN})\) and emission \(P(\text{dog}\mid\text{NN})\).</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li>DT occurs twice (the, a); both are followed by a noun (dog, cat): \(P(\text{NN}\mid\text{DT})=\dfrac{2}{2}=1\).</li>
+          <li>NN occurs twice (dog, cat); both are followed by VB (barks, sleeps): \(P(\text{VB}\mid\text{NN})=\dfrac{2}{2}=1\).</li>
+          <li>NN emits two words (dog, cat); "dog" appears once: \(P(\text{dog}\mid\text{NN})=\dfrac{1}{2}=0.5\).</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> \(P(\text{NN}\mid\text{DT})=1\), \(P(\text{VB}\mid\text{NN})=1\), \(P(\text{dog}\mid\text{NN})=0.5\).</div>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">2</div><div class="p-title">Assign Penn Treebank tags</div><div class="p-type">Scenario</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> Tag the sentence using the Penn Treebank tagset: "The grand jury commented on a number of other topics."</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li>Determiner "The" → <span class="tag-pos">DT</span>; adjective "grand" → <span class="tag-pos">JJ</span>; noun "jury" → <span class="tag-pos">NN</span>.</li>
+          <li>Past-tense verb "commented" → <span class="tag-pos">VBD</span>; preposition "on" → <span class="tag-pos">IN</span>.</li>
+          <li>"a" → <span class="tag-pos">DT</span>; "number" → <span class="tag-pos">NN</span>; "of" → <span class="tag-pos">IN</span>; "other" → <span class="tag-pos">JJ</span>; plural noun "topics" → <span class="tag-pos">NNS</span>; "." → <span class="tag-pos">.</span></li>
+        </ol>
+        <div class="ans"><b>Answer:</b> <span class="mono">The/DT grand/JJ jury/NN commented/VBD on/IN a/DT number/NN of/IN other/JJ topics/NNS ./.</span></div>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">3</div><div class="p-title">Why is one word hard to tag?</div><div class="p-type">Conceptual</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> Give four sentences in which "back" takes four different tags, and explain why this makes a most-frequent-tag baseline imperfect.</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li>"the <b>back</b> door" → <span class="tag-pos">JJ</span> (adjective).</li>
+          <li>"on my <b>back</b>" → <span class="tag-pos">NN</span> (noun).</li>
+          <li>"win the voters <b>back</b>" → <span class="tag-pos">RB</span> (adverb).</li>
+          <li>"promised to <b>back</b> the bill" → <span class="tag-pos">VB</span> (verb).</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> "back" is ambiguous across four classes. A most-frequent-tag baseline always picks one tag, so it must mis-tag the other uses — only <b>context</b> (HMM/Viterbi, neural models) resolves them.</div>
+      </div></details>
+    </div>
+  </div>
+
+  <!-- ============ TOPIC 7 ============ -->
+  <div class="rev-topic"><div class="rt-num" style="background:#ef4444">7</div><h2>Statistical / ML / Neural POS</h2><span class="mk">4 marks</span></div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">1</div><div class="p-title">Probability of a specific HMM path</div><div class="p-type">Numerical</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> Ice-cream HMM. For the observation sequence "1 3 1", compute the joint probability of the hidden path Cold-Hot-Cold using: \(P(C|\text{start})=0.2\), \(P(1|C)=0.5\), \(P(H|C)=0.4\), \(P(3|H)=0.4\), \(P(C|H)=0.3\).</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li>Multiply start, then alternate emission and transition along the path C→H→C:</li>
+          <li>\(P=\underbrace{0.2}_{P(C|\text{start})}\times\underbrace{0.5}_{P(1|C)}\times\underbrace{0.4}_{P(H|C)}\times\underbrace{0.4}_{P(3|H)}\times\underbrace{0.3}_{P(C|H)}\times\underbrace{0.5}_{P(1|C)}\).</li>
+          <li>\(=0.2\times0.5\times0.4\times0.4\times0.3\times0.5\).</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> \(P(\text{CHC},\,1\,3\,1)=\mathbf{0.0024}\).</div>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">2</div><div class="p-title">Two-step Viterbi decode</div><div class="p-type">Numerical</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> Tags {N, V}. Initial: \(P(N|\!\langle s\rangle)=0.6,\ P(V|\!\langle s\rangle)=0.4\). Transitions: \(P(N|N)=0.3,P(V|N)=0.7,P(N|V)=0.5,P(V|V)=0.5\). Emissions: \(P(\text{fish}|N)=0.6,P(\text{fish}|V)=0.2,P(\text{sleep}|N)=0.1,P(\text{sleep}|V)=0.5\). Decode "fish sleep".</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li><b>Col 1 (fish):</b> \(v(N)=0.6\times0.6=0.36\); \(v(V)=0.4\times0.2=0.08\).</li>
+          <li><b>Col 2 (sleep), state N:</b> \(\max(0.36\times0.3,\ 0.08\times0.5)\times0.1=\max(0.108,0.04)\times0.1=0.108\times0.1=0.0108\) (from N).</li>
+          <li><b>Col 2, state V:</b> \(\max(0.36\times0.7,\ 0.08\times0.5)\times0.5=\max(0.252,0.04)\times0.5=0.252\times0.5=0.126\) (from N).</li>
+          <li>Best final = V (0.126); backpointer → N.</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> best tag sequence = <b>fish/N sleep/V</b> with probability 0.126.</div>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="prob">
+    <div class="p-head"><div class="p-num">3</div><div class="p-title">HMM vs MEMM/CRF; greedy vs Viterbi</div><div class="p-type">Conceptual</div></div>
+    <div class="p-body">
+      <div class="q"><b>Q.</b> (a) What is the key difference between an HMM and an MEMM/CRF (generative vs discriminative)? (b) Why is Viterbi decoding preferred over greedy left-to-right decoding?</div>
+      <details class="sol"><summary>Show solution</summary><div class="sol-in">
+        <ol class="steps">
+          <li><b>(a)</b> An HMM is <b>generative</b>: it models the likelihood \(P(\text{words}\mid\text{tags})\) and a prior \(P(\text{tags})\). An MEMM/CRF is <b>discriminative</b>: it models the posterior \(P(\text{tags}\mid\text{words})\) directly, which lets you add rich, overlapping features (suffixes, word shape, neighbours).</li>
+          <li><b>(b)</b> Greedy decoding fixes each tag before seeing later words, so a confident early mistake can't be corrected. Viterbi keeps the best path into every state and optimises the <b>whole sentence</b> jointly, recovering the globally best sequence.</li>
+        </ol>
+        <div class="ans"><b>Answer:</b> generative (HMM) models \(P(w\mid t)\); discriminative (MEMM/CRF) models \(P(t\mid w)\) with features. Viterbi is globally optimal; greedy is locally optimal and error-prone.</div>
+      </div></details>
+    </div>
+  </div>
+
+  <div class="callout c-exam" style="margin-top:30px">
+    <span class="c-ico">✅</span>
+    <div class="c-body"><b>Final checklist before the exam</b>Bigram MLE + Laplace + perplexity · cosine &amp; TF-IDF by hand · the SGNS update (4 steps) · count-based transition/emission tables · a full Viterbi decode with backtrace · be ready to <i>justify</i> every answer.</div>
+  </div>
+
+  <div class="pager">
+    <a class="prev" href="07-pos-models.html"><div class="dir">← Previous</div><div class="ttl">7 · Statistical / ML / Neural POS</div></a>
+    <a class="next" href="index.html"><div class="dir">Back to →</div><div class="ttl">🏠 Home</div></a>
+  </div>
+
+</main>
+</div>
+</body>
+</html>

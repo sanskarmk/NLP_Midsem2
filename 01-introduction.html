@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1 · Introduction &amp; Applications — NLP Midsem Hub</title>
+<link rel="stylesheet" href="styles.css">
+<script defer src="app.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<div class="layout">
+<main class="content">
+
+  <div class="page-head">
+    <div class="crumb"><a href="index.html">Home</a> › Topic 1</div>
+    <span class="topic-tag">🚀 Topic 1</span> <span class="mark-badge">4 marks · Applications</span>
+    <h1>Introduction to NLP &amp; Applications</h1>
+    <p class="lede">What Natural Language Processing is, why language is so hard for machines, the levels at which we analyse it, and the application areas that make it a multi-billion-dollar field.</p>
+  </div>
+
+  <!-- THEORY -->
+  <section class="section sec-theory">
+    <div class="sec-head"><div class="sec-ico">📘</div><h2>Theory</h2></div>
+
+    <h3>What is NLP?</h3>
+    <p><b>Natural Language Processing</b> is the field that builds computers that can <b>analyse, understand and generate</b> human language the way humans do. It began as a branch of Artificial Intelligence and borrows from <b>Linguistics, Psycholinguistics, Cognitive Science and Statistics</b>. The guiding philosophy: <i>make computers learn our language, rather than us learning theirs.</i></p>
+
+    <div class="deflist">
+      <div class="d"><b>NLU (Understanding)</b> — mapping text/speech to meaning (e.g. parsing, sentiment, intent).</div>
+      <div class="d"><b>NLG (Generation)</b> — producing fluent text from meaning/data (e.g. summaries, replies, translation output).</div>
+    </div>
+
+    <h3>The six levels of language analysis</h3>
+    <p>A complete language understander reasons at increasing levels of abstraction. Each level has a classic "this is correct at the lower level but wrong here" example.</p>
+
+    <div class="figure">
+      <svg viewBox="0 0 620 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pyramid of the levels of language analysis">
+        <defs>
+          <linearGradient id="lg" x1="0" x2="1"><stop offset="0" stop-color="#6d5efc"/><stop offset="1" stop-color="#ec4899"/></linearGradient>
+        </defs>
+        <g font-family="Segoe UI, sans-serif" font-size="13">
+          <rect x="210" y="10"  width="200" height="34" rx="8" fill="#ec4899"/><text x="310" y="32" fill="#fff" text-anchor="middle" font-weight="700">Pragmatic / Discourse</text>
+          <rect x="170" y="50"  width="280" height="34" rx="8" fill="#a855f7"/><text x="310" y="72" fill="#fff" text-anchor="middle" font-weight="700">Semantic</text>
+          <rect x="130" y="90"  width="360" height="34" rx="8" fill="#8b5cf6"/><text x="310" y="112" fill="#fff" text-anchor="middle" font-weight="700">Syntactic</text>
+          <rect x="90"  y="130" width="440" height="34" rx="8" fill="#6366f1"/><text x="310" y="152" fill="#fff" text-anchor="middle" font-weight="700">Lexical</text>
+          <rect x="50"  y="170" width="520" height="34" rx="8" fill="#4f46e5"/><text x="310" y="192" fill="#fff" text-anchor="middle" font-weight="700">Morphological</text>
+          <text x="310" y="236" text-anchor="middle" fill="#737a9c">⬆ deeper meaning &amp; context · ⬇ raw word structure</text>
+        </g>
+      </svg>
+      <div class="figcap">Higher levels depend on the levels beneath them.</div>
+    </div>
+
+    <div class="tbl-wrap">
+    <table class="data">
+      <caption>Levels of language understanding — with the instructor's examples</caption>
+      <thead><tr><th>Level</th><th>Concerns</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">Morphological</td><td>How words are built from <b>morphemes</b> (smallest meaning units)</td><td>"friend" + "-ly" → <i>friendly</i> (noun → adjective)</td></tr>
+        <tr><td class="row-h">Lexical</td><td>Listing &amp; categorising valid words</td><td><i>friendship</i> ✓ but <i>friendful</i> ✗</td></tr>
+        <tr><td class="row-h">Syntactic</td><td>How words combine into grammatical sentences</td><td>"Large have green ideas nose" — lexically ok, <b>syntactically wrong</b></td></tr>
+        <tr><td class="row-h">Semantic</td><td>Context-independent meaning of words &amp; sentences</td><td>"Green ideas have large noses" — syntactically ok, <b>semantically wrong</b></td></tr>
+        <tr><td class="row-h">Pragmatic</td><td>How sentences are used in a situation</td><td>"She cuts banana with a pen" — semantically ok, <b>pragmatically useless</b></td></tr>
+        <tr><td class="row-h">Discourse</td><td>How earlier sentences shape later ones</td><td>"Chetana did PhD at IIT Bombay. <u>She</u> is a Professor at BITS." (who is "she"?)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Why is NLP hard? Ambiguity at every level</h3>
+    <p>The instructor's framing: <b>Language = Words + Rules + Exceptions</b>, and ambiguity appears everywhere. Three exam-relevant types:</p>
+    <div class="deflist">
+      <div class="d"><b>Structural ambiguity</b> — one sentence, several parse structures: <i>"Visiting relatives can be a nuisance."</i> (the act of visiting vs. relatives who visit).</div>
+      <div class="d"><b>Lexical ambiguity</b> — a word has multiple senses. <b>Homonymy</b>: <i>bank</i> (river) vs. <i>bank</i> (finance). <b>Polysemy</b>: related senses of <i>"understand"</i>.</div>
+      <div class="d"><b>Grammatical/POS ambiguity</b> — <i>can</i> = noun (container), modal verb, or verb (to can/pack).</div>
+    </div>
+
+    <h3>Representations: a tiny Context-Free Grammar</h3>
+    <p>Syntactic structure is often captured with CFG rules and a lexicon:</p>
+    <div class="formula-block">
+      <p>S → NP VP &nbsp;|&nbsp; NP → N N &nbsp;|&nbsp; NP → N &nbsp;|&nbsp; VP → V NP &nbsp;|&nbsp; VP → V PP &nbsp;|&nbsp; PP → P NP</p>
+      <p>Lexicon: <span class="mono">Rice:N</span> <span class="mono">Flies:N,V</span> <span class="mono">Like:V,P</span> <span class="mono">Sand:N</span></p>
+    </div>
+    <p>Because <i>Flies</i> and <i>Like</i> belong to multiple categories, "Rice flies like sand" has more than one valid parse — a textbook case of structural ambiguity driven by lexical ambiguity.</p>
+  </section>
+
+  <!-- INTUITION -->
+  <section class="section sec-intuition">
+    <div class="sec-head"><div class="sec-ico">💡</div><h2>Intuition</h2></div>
+    <p>Humans resolve ambiguity so effortlessly that language <i>looks</i> obvious — but we are quietly using world knowledge, context and intention. The famous <b>HAL 9000</b> dialogue ("Open the pod bay doors, HAL." / "I'm sorry, Dave. I'm afraid I can't do that.") shows how much a real understander needs: knowledge of the world, the meaning of the text, and the <b>intention</b> behind it, plus emotional and situational awareness.</p>
+    <div class="callout c-tip">
+      <span class="c-ico">🧠</span>
+      <div class="c-body"><b>The mental model to carry into the exam</b>Every NLP task is really "remove ambiguity using context." Tokenisation removes surface noise; POS tagging removes grammatical ambiguity; vector semantics removes lexical ambiguity; language models score which interpretation is more likely.</div>
+    </div>
+    <p>Why does language keep being hard? Because it <b>keeps changing</b> — new words, new rules, new exceptions — and the source signal (typed text, OCR, speech) is <b>noisy</b>.</p>
+  </section>
+
+  <!-- NUMERICAL -->
+  <section class="section sec-numerical">
+    <div class="sec-head"><div class="sec-ico">🧮</div><h2>Numerical / Problem</h2></div>
+    <p>"Problem" questions on the introduction usually test <b>evaluation metrics</b> (from the contingency table) or asking you to <b>classify the level of an error</b>. Here is the metrics workhorse.</p>
+
+    <h3>Evaluating an NLP system: precision, recall, F1</h3>
+    <p>Given a contingency table of system decisions vs. truth:</p>
+    <div class="formula-block">
+      <div class="label">Definitions</div>
+      \[ \text{Precision}=\frac{TP}{TP+FP}\qquad \text{Recall}=\frac{TP}{TP+FN}\qquad F_1=\frac{2\,PR}{P+R} \]
+    </div>
+
+    <p><b>Worked example.</b> A spam filter is run on 100 emails. It flags 40 as spam; of those, 30 are truly spam. The dataset contains 45 spam emails in total.</p>
+    <ol class="steps">
+      <li>Identify the counts. Flagged spam that is truly spam: \(TP=30\). Flagged but actually ham: \(FP=40-30=10\). True spam it missed: \(FN=45-30=15\).</li>
+      <li>Precision \(=\dfrac{30}{30+10}=\dfrac{30}{40}=0.75\) → 75% of flagged emails really were spam.</li>
+      <li>Recall \(=\dfrac{30}{30+15}=\dfrac{30}{45}=0.667\) → it caught 66.7% of all spam.</li>
+      <li>\(F_1=\dfrac{2(0.75)(0.667)}{0.75+0.667}=\dfrac{1.0}{1.417}=0.706\).</li>
+    </ol>
+    <div class="ans"><b>Answer:</b> Precision = 0.75, Recall = 0.667, F₁ ≈ <b>0.71</b>. The filter is fairly precise but misses about a third of spam — F₁ balances the two.</div>
+
+    <div class="callout c-exam">
+      <span class="c-ico">🎯</span>
+      <div class="c-body"><b>Exam tip</b>If asked to "identify the level violated," anchor on the canonical examples: <i>"Green ideas have large noses"</i> = <b>semantic</b>; <i>"Large have green ideas nose"</i> = <b>syntactic</b>; <i>"She cuts banana with a pen"</i> = <b>pragmatic</b>.</div>
+    </div>
+  </section>
+
+  <!-- REAL LIFE -->
+  <section class="section sec-reallife">
+    <div class="sec-head"><div class="sec-ico">🌍</div><h2>Real-life examples</h2></div>
+    <p>NLP is everywhere — the market was projected to grow from <b>USD 15.7 B (2022) to USD 49.4 B (2027)</b> at ~25.7% CAGR. Application areas from the lecture:</p>
+    <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(210px,1fr))">
+      <div class="callout c-note" style="margin:0"><span class="c-ico">🗣️</span><div class="c-body"><b>Speech &amp; assistants</b>Text-to-speech, speech recognition, Siri/Alexa dialogue interfaces.</div></div>
+      <div class="callout c-note" style="margin:0"><span class="c-ico">🌐</span><div class="c-body"><b>Machine translation</b>Translating a Japanese newspaper to English in real time.</div></div>
+      <div class="callout c-note" style="margin:0"><span class="c-ico">🔎</span><div class="c-body"><b>IR &amp; information extraction</b>Search engines, NER ("Michael Dell is CEO of Dell…").</div></div>
+      <div class="callout c-note" style="margin:0"><span class="c-ico">📨</span><div class="c-body"><b>Classification &amp; routing</b>Sorting customer emails; spam detection.</div></div>
+      <div class="callout c-note" style="margin:0"><span class="c-ico">😊</span><div class="c-body"><b>Sentiment analysis</b>Monitoring social media; product reviews.</div></div>
+      <div class="callout c-note" style="margin:0"><span class="c-ico">✍️</span><div class="c-body"><b>Writing aids</b>Spelling/grammar check, summarisation, word prediction.</div></div>
+      <div class="callout c-note" style="margin:0"><span class="c-ico">🛡️</span><div class="c-body"><b>Safety &amp; integrity</b>Fake-news detection, plagiarism detection, cyberbullying detection.</div></div>
+      <div class="callout c-note" style="margin:0"><span class="c-ico">❓</span><div class="c-body"><b>Question answering</b>"Who is the first Taiwanese president?" → factual answers.</div></div>
+    </div>
+    <p style="margin-bottom:0"><b>Tools to name-drop:</b> commercial — IBM Watson, Google Cloud NLP API, Amazon Comprehend; open source — Stanford CoreNLP, spaCy, Gensim, <b>NLTK</b>, GPT, AllenNLP, Berkeley Neural Parser.</p>
+  </section>
+
+  <div class="callout c-formula">
+    <span class="c-ico">📌</span>
+    <div class="c-body"><b>One-line summary</b>NLP = teaching machines to resolve linguistic ambiguity at six levels (morphological → discourse), powering translation, search, assistants, and sentiment — a fast-growing, AI-rooted, multidisciplinary field.</div>
+  </div>
+
+  <div class="pager">
+    <a class="prev" href="index.html"><div class="dir">← Back</div><div class="ttl">Home</div></a>
+    <a class="next" href="02-language-models.html"><div class="dir">Next →</div><div class="ttl">2 · Language Models</div></a>
+  </div>
+
+</main>
+</div>
+</body>
+</html>

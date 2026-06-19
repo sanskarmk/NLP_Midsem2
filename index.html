@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NLP Midsem Study Hub</title>
+<link rel="stylesheet" href="styles.css">
+<script defer src="app.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<div class="layout">
+<main class="content">
+
+  <section class="hero">
+    <span class="eyebrow">EC2 · MID-SEMESTER EXAMINATION · 30 MARKS</span>
+    <h1>Natural Language Processing — Midsem Study Hub</h1>
+    <p>Every syllabus topic in one place: clear <b>theory</b>, plain-English <b>intuition</b>, fully <b>worked numericals</b>, and <b>real-life examples</b> — plus a dedicated revision section with 21 solved problems matched to the exam pattern.</p>
+    <div class="hero-cta">
+      <a class="btn btn-light" href="01-introduction.html">▶ Start studying</a>
+      <a class="btn btn-ghost" href="revision.html">📝 Jump to revision &amp; solved problems</a>
+    </div>
+  </section>
+
+  <div class="callout c-note" style="margin-top:0">
+    <span class="c-ico">🧭</span>
+    <div class="c-body">
+      <b>How this hub is organised</b>
+      Each topic page is split into four colour-coded blocks — <span class="chip theory">Theory</span> <span class="chip" style="background:var(--intuition-bg);color:var(--intuition-ink);border-color:#fae3b4">Intuition</span> <span class="chip numerical">Numerical</span> <span class="chip reallife">Real-life</span> — so you can revise the way the paper tests you: concepts, problems, and applications.
+    </div>
+  </div>
+
+  <h2 style="margin:30px 0 4px">The 7 examinable topics</h2>
+  <p style="color:var(--muted);margin-top:0">Click any card to open the full study page. Marks shown are from the official question-paper pattern.</p>
+
+  <div class="grid">
+    <a class="tcard c1" href="01-introduction.html">
+      <div class="tnum">1</div>
+      <h3>Introduction &amp; Applications</h3>
+      <p>What NLP is, why it's hard, levels of language, ambiguity, NLU vs NLG, and where it's used.</p>
+      <div class="tfoot"><span class="mk">4 marks</span><span class="go">Open →</span></div>
+    </a>
+    <a class="tcard c2" href="02-language-models.html">
+      <div class="tnum">2</div>
+      <h3>Language Models (N-gram)</h3>
+      <p>Chain rule, Markov assumption, bigram MLE, Laplace smoothing, perplexity, backoff &amp; interpolation.</p>
+      <div class="tfoot"><span class="mk">4 marks</span><span class="go">Open →</span></div>
+    </a>
+    <a class="tcard c3" href="03-neural-llm.html">
+      <div class="tnum">3</div>
+      <h3>Neural LM · LLM · Prompting</h3>
+      <p>Neural units, XOR, feedforward nets, neural language models, LLMs, prompt engineering, transfer learning.</p>
+      <div class="tfoot"><span class="mk">4 marks</span><span class="go">Open →</span></div>
+    </a>
+    <a class="tcard c4" href="04-vector-semantics.html">
+      <div class="tnum">4</div>
+      <h3>Vector Semantics</h3>
+      <p>Distributional hypothesis, term-context matrices, dot product, cosine similarity, TF-IDF, sparse vs dense.</p>
+      <div class="tfoot"><span class="mk">4 marks</span><span class="go">Open →</span></div>
+    </a>
+    <a class="tcard c5" href="05-word-embeddings.html">
+      <div class="tnum">5</div>
+      <h3>Word Embeddings</h3>
+      <p>Word2Vec, skip-gram with negative sampling (SGNS) maths, CBOW, GloVe, analogies, bias. <b>Highest weight.</b></p>
+      <div class="tfoot"><span class="mk">5 marks</span><span class="go">Open →</span></div>
+    </a>
+    <a class="tcard c6" href="06-pos-tagging.html">
+      <div class="tnum">6</div>
+      <h3>POS Tagging</h3>
+      <p>Tagsets, open/closed classes, ambiguity, sequence classification, count-based tag probabilities.</p>
+      <div class="tfoot"><span class="mk">4 marks</span><span class="go">Open →</span></div>
+    </a>
+    <a class="tcard c7" href="07-pos-models.html">
+      <div class="tnum">7</div>
+      <h3>Statistical / ML / Neural POS</h3>
+      <p>HMM, Viterbi (worked end-to-end), MEMM, CRF, Bi-LSTM-CRF, Transformers, LLM agents.</p>
+      <div class="tfoot"><span class="mk">4 marks</span><span class="go">Open →</span></div>
+    </a>
+    <a class="tcard c8" href="revision.html">
+      <div class="tnum">★</div>
+      <h3>Revision &amp; Solved Problems</h3>
+      <p>Exam pattern + <b>3 fully-solved problems per topic</b> (21 total) with step-by-step solutions.</p>
+      <div class="tfoot"><span class="mk">all 30 marks</span><span class="go">Open →</span></div>
+    </a>
+  </div>
+
+  <section class="section sec-theory">
+    <div class="sec-head"><div class="sec-ico">📋</div><h2>Exam pattern at a glance</h2></div>
+    <p>The mid-semester paper is <b>30 marks</b> and mixes three question styles. Plan your revision around them.</p>
+    <div class="chips">
+      <span class="chip">🧮 Numerical Problems</span>
+      <span class="chip">🗂️ Scenario-Based Case Studies</span>
+      <span class="chip">💡 Conceptual Questions</span>
+    </div>
+    <ul>
+      <li>Questions may contain sub-divisions.</li>
+      <li>Both <b>conceptual understanding</b> and <b>problem-solving ability</b> are assessed.</li>
+      <li>You are expected to <b>justify answers</b> wherever appropriate.</li>
+    </ul>
+    <p style="margin-bottom:0">The full marks table and 21 worked problems live on the <a href="revision.html"><b>Revision page →</b></a></p>
+  </section>
+
+  <div class="callout c-tip">
+    <span class="c-ico">📡</span>
+    <div class="c-body"><b>One small note</b>Mathematical formulas render via MathJax, which loads from the internet the first time you open a page. Keep a connection on for the cleanest equations.</div>
+  </div>
+
+</main>
+</div>
+</body>
+</html>

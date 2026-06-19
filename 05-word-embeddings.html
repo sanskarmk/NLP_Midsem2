@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5 · Word Embeddings — NLP Midsem Hub</title>
+<link rel="stylesheet" href="styles.css">
+<script defer src="app.js"></script>
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+<div class="layout">
+<main class="content">
+
+  <div class="page-head">
+    <div class="crumb"><a href="index.html">Home</a> › Topic 5</div>
+    <span class="topic-tag">✨ Topic 5</span> <span class="mark-badge">5 marks · Problem · highest weight</span>
+    <h1>Word Embeddings</h1>
+    <p class="lede">Short, dense, learned word vectors. Word2Vec's skip-gram with negative sampling (SGNS) trains a classifier to tell real neighbours from random words — and keeps the weights as embeddings. This is the most-weighted topic, so the SGNS update is worth mastering.</p>
+  </div>
+
+  <!-- THEORY -->
+  <section class="section sec-theory">
+    <div class="sec-head"><div class="sec-ico">📘</div><h2>Theory</h2></div>
+
+    <h3>Sparse counts → dense embeddings</h3>
+    <p>Instead of long sparse TF-IDF vectors, learn <b>dense</b> vectors (length 50–1000). They have fewer parameters, generalise better, and capture synonymy (separate dimensions for <i>car</i> and <i>automobile</i> can't see their similarity; dense vectors can).</p>
+
+    <h3>Word2Vec — predict, don't count</h3>
+    <p>Big idea: don't count how often \(w\) occurs near "apricot"; instead train a classifier on a binary task — <i>"is \(w\) likely to appear near apricot?"</i> We don't care about the task; we keep the learned weights as embeddings. This is <b>self-supervision</b>: a word that really occurs near the target is the "correct answer", no human labels needed. We use <b>skip-gram with negative sampling (SGNS)</b>.</p>
+
+    <h3>The skip-gram classifier</h3>
+    <p>Take a target word \(w\) and a context word \(c\). Their similarity is the <b>dot product</b>; squash it through the sigmoid to get a probability:</p>
+    <div class="formula-block">
+      \[ P(+\mid w,c)=\sigma(\mathbf c\cdot\mathbf w)=\frac{1}{1+e^{-\mathbf c\cdot\mathbf w}} \]
+      \[ P(-\mid w,c)=1-P(+\mid w,c)=\sigma(-\mathbf c\cdot\mathbf w) \]
+    </div>
+    <p>For each <b>positive</b> pair we sample \(k\) <b>negative</b> words (\(k\approx2\text{–}5\) large data, 5–20 small). Loss for one target with positive \(c_{pos}\) and negatives \(c_{neg_1\dots k}\):</p>
+    <div class="formula-block">\[ L_{CE}=-\Big[\log\sigma(\mathbf c_{pos}\!\cdot\!\mathbf w)+\sum_{i=1}^{k}\log\sigma(-\mathbf c_{neg_i}\!\cdot\!\mathbf w)\Big] \]</div>
+    <p>Goal: <b>maximise</b> similarity of the true (target, context) pair and <b>minimise</b> similarity to noise words. Train by <b>stochastic gradient descent</b>.</p>
+
+    <h3>Two embedding matrices &amp; the gradients</h3>
+    <p>SGNS learns a <b>target</b> matrix \(W\) and a <b>context</b> matrix \(C\); the final vector for word \(i\) is often \(\mathbf w_i+\mathbf c_i\). The SGD updates use the "prediction error" \((\sigma-t)\), where \(t=1\) for the positive word and \(0\) for negatives:</p>
+    <div class="formula-block">
+      \[ \frac{\partial L}{\partial \mathbf w}=\sum_{j}\big(\sigma(\mathbf c_j\!\cdot\!\mathbf w)-t_j\big)\,\mathbf c_j \]
+      \[ \mathbf w^{\text{new}}=\mathbf w-\eta\,\frac{\partial L}{\partial \mathbf w} \]
+    </div>
+
+    <h3>CBOW vs Skip-gram</h3>
+    <div class="two-col">
+      <div class="callout c-note" style="margin:0"><span class="c-ico">🎯</span><div class="c-body"><b>Skip-gram</b>Predicts context words <i>from</i> the centre word. Good with little data; represents rare words well.</div></div>
+      <div class="callout c-note" style="margin:0"><span class="c-ico">📦</span><div class="c-body"><b>CBOW</b>Predicts the centre word <i>from</i> surrounding context. Faster to train; slightly better on frequent words.</div></div>
+    </div>
+
+    <h3>GloVe — global vectors</h3>
+    <p>GloVe (Stanford) is unsupervised and uses the <b>global</b> word–word co-occurrence matrix \(X\), where \(X_{ij}\) = times word \(j\) occurs in the context of word \(i\). Its key idea: learn from <b>ratios</b> of co-occurrence probabilities \(P_{ik}/P_{jk}\), which encode meaning, rather than the raw probabilities. Unlike word2vec it captures global statistics, not just local context.</p>
+  </section>
+
+  <!-- INTUITION -->
+  <section class="section sec-intuition">
+    <div class="sec-head"><div class="sec-ico">💡</div><h2>Intuition</h2></div>
+    <p>Imagine each word scored on hidden features — <i>gender, royal, age, food</i>:</p>
+    <div class="tbl-wrap">
+    <table class="data">
+      <thead><tr><th>feature</th><th>Man</th><th>Woman</th><th>King</th><th>Queen</th><th>Apple</th><th>Orange</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">Gender</td><td>−1</td><td>1</td><td>−0.95</td><td>0.97</td><td>0.00</td><td>0.01</td></tr>
+        <tr><td class="row-h">Royal</td><td>0.01</td><td>0.02</td><td>0.93</td><td>0.95</td><td>−0.01</td><td>0.00</td></tr>
+        <tr><td class="row-h">Age</td><td>0.03</td><td>0.02</td><td>0.70</td><td>0.69</td><td>0.03</td><td>−0.02</td></tr>
+        <tr><td class="row-h">Food</td><td>0.09</td><td>0.01</td><td>0.02</td><td>0.01</td><td>0.95</td><td>0.97</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Word2Vec discovers such features automatically. Then meaning becomes <b>arithmetic</b>: the vector from <i>man</i>→<i>king</i> (adding "royal") is the same as <i>woman</i>→<i>queen</i>.</p>
+    <div class="figure">
+      <svg viewBox="0 0 420 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="King-Queen-Man-Woman parallelogram analogy">
+        <g font-family="Segoe UI, sans-serif" font-size="13" font-weight="700">
+          <line x1="80" y1="180" x2="300" y2="180" stroke="#d9d6f3" stroke-dasharray="4 4"/>
+          <line x1="80" y1="60"  x2="300" y2="60"  stroke="#d9d6f3" stroke-dasharray="4 4"/>
+          <line x1="80" y1="180" x2="80" y2="60"   stroke="#ec4899" stroke-width="2.5" marker-end="url(#b)"/>
+          <line x1="300" y1="180" x2="300" y2="60" stroke="#ec4899" stroke-width="2.5" marker-end="url(#b)"/>
+          <circle cx="80" cy="180" r="6" fill="#6366f1"/><text x="40" y="200" fill="#4f46e5">man</text>
+          <circle cx="80" cy="60" r="6" fill="#8b5cf6"/><text x="40" y="52" fill="#6d28d9">king</text>
+          <circle cx="300" cy="180" r="6" fill="#10b981"/><text x="290" y="200" fill="#047857">woman</text>
+          <circle cx="300" cy="60" r="6" fill="#0ea5e9"/><text x="290" y="52" fill="#0369a1">queen</text>
+          <text x="92" y="125" fill="#be185d" font-size="11">+ royal</text>
+          <text x="312" y="125" fill="#be185d" font-size="11">+ royal</text>
+          <defs><marker id="b" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 z" fill="#ec4899"/></marker></defs>
+        </g>
+      </svg>
+      <div class="figcap">The parallelogram model: <b>king − man + woman ≈ queen</b>.</div>
+    </div>
+    <div class="callout c-tip"><span class="c-ico">🪟</span><div class="c-body"><b>Window size matters</b>Small windows (±2) → syntactically similar neighbours (Hogwarts → other schools). Large windows (±5) → topically related words (Hogwarts → Dumbledore, Malfoy).</div></div>
+  </section>
+
+  <!-- NUMERICAL -->
+  <section class="section sec-numerical">
+    <div class="sec-head"><div class="sec-ico">🧮</div><h2>Numerical — the SGNS update (exam favourite)</h2></div>
+    <p>Corpus: <span class="mono">"Ned Stark is the most honourable man"</span>. Positive pair (target, context) = <b>(ned, stark)</b>; negative samples = <b>pimples, zebra, idiot</b>. Learning rate \(\eta=0.05\).</p>
+
+    <div class="tbl-wrap">
+    <table class="data">
+      <caption>Given embeddings (3-dimensional)</caption>
+      <thead><tr><th>word</th><th colspan="3">context embedding \(\mathbf c\)</th><th>role</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">stark</td><td>0.116</td><td>0.723</td><td>−0.689</td><td>positive</td></tr>
+        <tr><td class="row-h">pimples</td><td>−0.94</td><td>0.601</td><td>0.146</td><td>negative</td></tr>
+        <tr><td class="row-h">zebra</td><td>−0.622</td><td>0.811</td><td>0.64</td><td>negative</td></tr>
+        <tr><td class="row-h">idiot</td><td>−0.077</td><td>−0.375</td><td>−0.056</td><td>negative</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>Target (input) embedding of <b>ned</b>: \(\mathbf w=[-0.018,\;0.404,\;-0.317]\).</p>
+
+    <h3>Step 1 — Forward pass (dot product → sigmoid)</h3>
+    <p>e.g. for <b>stark</b>: \(\mathbf c\cdot\mathbf w=0.116(-0.018)+0.723(0.404)+(-0.689)(-0.317)=0.508\), then \(\sigma(0.508)=0.624\).</p>
+    <div class="tbl-wrap">
+    <table class="data">
+      <thead><tr><th>word</th><th>\(\mathbf c\cdot\mathbf w\)</th><th>\(\sigma(\mathbf c\cdot\mathbf w)\)</th><th>target \(t\)</th><th>error \((\sigma-t)\)</th></tr></thead>
+      <tbody>
+        <tr><td class="row-h">stark</td><td>0.508</td><td>0.624</td><td>1</td><td class="hi2">−0.376</td></tr>
+        <tr><td class="row-h">pimples</td><td>0.213</td><td>0.553</td><td>0</td><td class="hi2">0.553</td></tr>
+        <tr><td class="row-h">zebra</td><td>0.136</td><td>0.534</td><td>0</td><td class="hi2">0.534</td></tr>
+        <tr><td class="row-h">idiot</td><td>−0.132</td><td>0.467</td><td>0</td><td class="hi2">0.467</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Step 2 — Gradient w.r.t. the target embedding</h3>
+    <p>\(\dfrac{\partial L}{\partial \mathbf w}=\sum_j(\sigma_j-t_j)\,\mathbf c_j\) — multiply each error by that word's context vector and add up:</p>
+    <ol class="steps">
+      <li>stark: \(-0.376\times[0.116,0.723,-0.689]=[-0.0436,-0.2718,0.2591]\)</li>
+      <li>pimples: \(0.553\times[-0.94,0.601,0.146]=[-0.5198,0.3324,0.0807]\)</li>
+      <li>zebra: \(0.534\times[-0.622,0.811,0.64]=[-0.3322,0.4331,0.3418]\)</li>
+      <li>idiot: \(0.467\times[-0.077,-0.375,-0.056]=[-0.0360,-0.1751,-0.0262]\)</li>
+      <li>Sum (column-wise): \([-0.9315,\;0.3185,\;0.6554]\)</li>
+    </ol>
+
+    <h3>Step 3 — Update the target embedding</h3>
+    <p>\(\mathbf w^{\text{new}}=\mathbf w-\eta\,\dfrac{\partial L}{\partial \mathbf w}\), with \(\eta=0.05\):</p>
+    <ol class="steps">
+      <li>\(\eta\times\text{grad}=0.05\times[-0.9315,0.3185,0.6554]=[-0.0466,0.0159,0.0328]\)</li>
+      <li>\(\mathbf w^{\text{new}}=[-0.018,0.404,-0.317]-[-0.0466,0.0159,0.0328]\)</li>
+    </ol>
+    <div class="ans"><b>Updated embedding of "ned": \([0.029,\;0.388,\;-0.35]\).</b> Notice it moved <i>toward</i> stark's direction (positive) and <i>away</i> from the noise words — exactly what training should do.</div>
+
+    <div class="callout c-exam"><span class="c-ico">🎯</span><div class="c-body"><b>Method to memorise (5 marks)</b>① dot → sigmoid, ② error = σ − t (t=1 positive, 0 negative), ③ gradient = Σ(error)·(context vector), ④ new = old − η·gradient. Context embeddings update symmetrically with \(\partial L/\partial \mathbf c_j=(\sigma_j-t_j)\mathbf w\).</div></div>
+  </section>
+
+  <!-- REAL LIFE -->
+  <section class="section sec-reallife">
+    <div class="sec-head"><div class="sec-ico">🌍</div><h2>Real-life examples</h2></div>
+    <div class="deflist">
+      <div class="d"><b>Semantic search &amp; recommendation</b> — retrieve by meaning, not exact words.</div>
+      <div class="d"><b>Analogies</b> — "Paris : France :: Tokyo : ?" → Japan, via vector arithmetic.</div>
+      <div class="d"><b>Historical semantics</b> — train on each decade to watch word meanings drift (1850–1990 Google Books).</div>
+      <div class="d"><b>Bias auditing ⚠️</b> — embeddings learn cultural bias ("man : programmer :: woman : homemaker"). Using them in hiring tools can propagate that bias — an ethics point worth raising.</div>
+    </div>
+  </section>
+
+  <div class="callout c-formula">
+    <span class="c-ico">📌</span>
+    <div class="c-body"><b>One-line summary</b>Word2Vec trains a classifier (\(\sigma(\mathbf c\cdot\mathbf w)\)) to separate true neighbours from negatives; its learned weights are dense embeddings where similar words cluster and analogies become vector arithmetic.</div>
+  </div>
+
+  <div class="pager">
+    <a class="prev" href="04-vector-semantics.html"><div class="dir">← Previous</div><div class="ttl">4 · Vector Semantics</div></a>
+    <a class="next" href="06-pos-tagging.html"><div class="dir">Next →</div><div class="ttl">6 · POS Tagging</div></a>
+  </div>
+
+</main>
+</div>
+</body>
+</html>
